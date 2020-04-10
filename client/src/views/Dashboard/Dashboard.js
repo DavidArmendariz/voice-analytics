@@ -13,15 +13,19 @@ import arrayToObject from "../../utils/ArrayToObject";
 const Dashboard = ({ employees }) => {
   const [file, setFile] = useState(null);
   const [transcription, setTranscription] = useState("");
+  const [employeeUUID, setEmployeeUUID] = useState("");
 
   const onChangeHandler = event => {
     setFile(event.target.files[0]);
   };
 
   const submitForm = (contentType, data) => {
+    const currentDate = new Date();
+    const uid = Date.now();
+    const destinationBlob = `employees/${employeeUUID}/${currentDate.getFullYear()}-${currentDate.getMonth() +
+      1}-${currentDate.getDate()}/${uid}.mp3`;
     axios({
-      url:
-        "http://0.0.0.0:8080/upload?bucket=voice-8ddf6.appspot.com&blob=thisiscool.mp3",
+      url: `https://us-central1-voice-8ddf6.cloudfunctions.net/upload_blob?blob=${destinationBlob}`,
       method: "POST",
       data: data,
       headers: {
@@ -33,6 +37,7 @@ const Dashboard = ({ employees }) => {
         setTranscription(response.data);
       })
       .catch(error => {
+        console.log(error);
         setTranscription("Oops! There was an error. Try again.");
       });
   };
@@ -119,6 +124,7 @@ const Dashboard = ({ employees }) => {
           <Options
             title={"Select employee"}
             options={arrayToObject(employees, "name", "uid")}
+            handleChange={setEmployeeUUID}
           />
         </Grid>
       </Grid>

@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Options = ({ title, options }) => {
+const Options = ({ title, options, handleChange }) => {
   const classes = useStyles();
   const [firstValue, setFirstValue] = useState(
     options[Object.keys(options)[0]]
@@ -27,6 +27,7 @@ const Options = ({ title, options }) => {
         value={firstValue}
         onChange={event => {
           setFirstValue(event.target.value);
+          handleChange(event.target.value);
         }}
       >
         {Object.entries(options).map((option, index) => (
