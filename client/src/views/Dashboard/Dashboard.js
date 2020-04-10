@@ -1,24 +1,16 @@
 /*eslint-disable*/
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import {} from "../../redux/employees/employees.actions";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
-import ClipLoader from "react-spinners/ClipLoader";
-import { css } from "@emotion/core";
+import { connect } from "react-redux";
+import Options from "../../components/Select/Select";
+import { languages } from "../../constants/Languages";
+import arrayToObject from "../../utils/ArrayToObject";
 
-const useStyles = makeStyles(styles);
-
-const override = css`
-  display: block;
-  margin: 0 auto;
-  border-color: red;
-`;
-
-export default function Dashboard() {
-  const classes = useStyles();
+const Dashboard = ({ employees }) => {
   const [file, setFile] = useState(null);
   const [transcription, setTranscription] = useState("");
 
@@ -51,7 +43,7 @@ export default function Dashboard() {
     submitForm("multipart/form-data", formData);
   };
 
-  return (
+  return employees ? (
     <div>
       <Grid container alignItems="center" spacing={6}>
         <Grid item>
@@ -124,6 +116,21 @@ export default function Dashboard() {
       <div style={{ height: "70px" }} />
       <Grid container justify="center" spacing={6}>
         <Grid item>
+          <Options
+            title={"Select employee"}
+            options={arrayToObject(employees, "name", "uid")}
+          />
+        </Grid>
+      </Grid>
+      <div style={{ height: "70px" }} />
+      <Grid container justify="center" spacing={6}>
+        <Grid item>
+          <Options title={"Select language"} options={languages} />
+        </Grid>
+      </Grid>
+      <div style={{ height: "70px" }} />
+      <Grid container justify="center" spacing={6}>
+        <Grid item>
           <input type="file" name="file" onChange={onChangeHandler} />
         </Grid>
       </Grid>
@@ -143,5 +150,11 @@ export default function Dashboard() {
         </Grid>
       ) : null}
     </div>
-  );
-}
+  ) : null;
+};
+
+const mapStateToProps = store => ({
+  employees: store.employees.employees
+});
+
+export default connect(mapStateToProps)(Dashboard);
