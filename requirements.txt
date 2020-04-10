@@ -1,2 +1,8 @@
 google-cloud-storage
 google-cloud-speech
+flask
+autopep8
+wheel
+functions-framework
+flask-cors
+requests
