@@ -43,7 +43,7 @@ def long_speech_to_text(request):
         abort(Response("Invalid bearer token", 401, headers))
     try:
         client = speech_v1.SpeechClient()
-        sample_rate_hertz = 16000
+        sample_rate_hertz = int(request.args["rate"])
         language_code = request.args["language"]
         storage_uri = request.args["uri"]
         bucket_name = os.environ.get("BUCKET_NAME")

@@ -17,6 +17,7 @@ const Dashboard = ({ employees }) => {
   const [employeeUUID, setEmployeeUUID] = useState(null);
   const [languageCode, setLanguageCode] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [metadata, setMetadata] = useState(null);
 
   const handleUpload = event => {
     setFile(event.target.files[0]);
@@ -27,7 +28,10 @@ const Dashboard = ({ employees }) => {
     formData.append("file", file);
     setIsProcessing(true);
     processAudio(employeeUUID, languageCode, formData)
-      .then(response => setTranscription(response))
+      .then(response => {
+        setTranscription(response["transcript"]);
+        setMetadata({audioLength: response["audioLength"]});
+      })
       .then(() => setIsProcessing(false));
   };
 
@@ -141,6 +145,15 @@ const Dashboard = ({ employees }) => {
           </Button>
         )}
       </Grid>
+      <div style={{ height: "70px" }} />
+      {metadata ? (
+        <Grid container justify="center">
+          <Grid container justify="center">
+            <Typography variant="h2">Metadata</Typography>
+          </Grid>
+          <div style={{ height: "70px" }}>Audio length: {metadata["audioLength"].toFixed(2)} seconds.</div>
+        </Grid>
+      ) : null}
       <div style={{ height: "70px" }} />
       {transcription ? (
         <Grid container justify="center">

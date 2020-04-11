@@ -4,4 +4,5 @@ flask
 autopep8
 wheel
 functions-framework
-requests
+firebase-admin
+mutagen

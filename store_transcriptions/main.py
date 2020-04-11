@@ -1,6 +1,9 @@
 from google.cloud import storage
 from flask import abort, Response
 import os
+import firebase_admin
+from firebase_admin import firestore
+
 
 def get_bearer_token(request):
     bearer_token = request.headers.get("Authorization", None)
@@ -20,7 +23,7 @@ def get_bearer_token(request):
     return bearer_token
 
 
-def upload_blob(request):
+def store_transcriptions(request):
     if request.method == "OPTIONS":
         headers = {
             'Access-Control-Allow-Origin': "*",
@@ -40,21 +43,23 @@ def upload_blob(request):
     if bearer_token != secret_key:
         abort(Response("Invalid bearer token", 401, headers))
     try:
-        print("Uploading...")
-        bucket_name = os.environ.get("BUCKET_NAME")
-        destination_blob_name = request.args["blob"]
-        source_file = request.files["file"]
-        print(bucket_name, destination_blob_name)
-        # If we want to upload the file as is, we need to save it somewhere. In Google Cloud Functions instances, the only
-        # directory where we can save files is /tmp
-        source_file.save("/tmp/audio.mp3")
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(bucket_name)
-        blob = bucket.blob(destination_blob_name)
-        blob.upload_from_filename("/tmp/audio.mp3")
-        # This part of the code is to process the audio
-        # post_headers = {'Authorization': f"Bearer {bearer_token}"}
-        # transcript = post("http://0.0.0.0:8081/", params={"uri": f"gs://{bucket_name}/thisiscool.mp3", "language": "es-EC"}, headers=post_headers)
+        try:
+            firebase_admin.initialize_app()
+        except:
+            print("Firebase App already initialized")
+        db = firestore.client()
+        request_json = request.get_json()
+        transcription = request_json["transcription"]
+        reference = request_json["reference"]
+        audio_length = request_json["length"]
+        employees_collection, uid, transcription_collection = reference.split(
+            "/")
+        data = {"transcription": transcription,
+                "date": firestore.SERVER_TIMESTAMP,
+                "audioLength": audio_length}
+        db.collection(employees_collection).document(
+            uid).collection(transcription_collection).add(data)
+        print(f"Sucessfully stored transcription in {reference}")
         return Response("OK", 200, headers)
     except Exception as e:
         print(f"Error: {e}")
