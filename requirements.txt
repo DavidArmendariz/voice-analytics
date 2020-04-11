@@ -4,5 +4,4 @@ flask
 autopep8
 wheel
 functions-framework
-flask-cors
 requests

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -20,6 +20,7 @@ const Options = ({ title, options, handleChange }) => {
   const [firstValue, setFirstValue] = useState(
     options[Object.keys(options)[0]]
   );
+  useEffect(() => {handleChange(firstValue)})
   return (
     <FormControl className={classes.formControl}>
       <InputLabel>{title}</InputLabel>

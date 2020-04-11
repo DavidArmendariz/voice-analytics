@@ -1,7 +1,6 @@
 from google.cloud import storage
 from flask import abort, Response
 import os
-from requests import post
 
 def get_bearer_token(request):
     bearer_token = request.headers.get("Authorization", None)

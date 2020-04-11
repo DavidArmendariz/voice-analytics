@@ -1,51 +1,34 @@
 /*eslint-disable*/
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {} from "../../redux/employees/employees.actions";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import axios from "axios";
 import { connect } from "react-redux";
 import Options from "../../components/Select/Select";
 import { languages } from "../../constants/Languages";
 import arrayToObject from "../../utils/ArrayToObject";
+import processAudio from "../../utils/ProcessAudio";
+import Loader from "react-loader-spinner";
 
 const Dashboard = ({ employees }) => {
   const [file, setFile] = useState(null);
-  const [transcription, setTranscription] = useState("");
-  const [employeeUUID, setEmployeeUUID] = useState("");
+  const [transcription, setTranscription] = useState(null);
+  const [employeeUUID, setEmployeeUUID] = useState(null);
+  const [languageCode, setLanguageCode] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const onChangeHandler = event => {
+  const handleUpload = event => {
     setFile(event.target.files[0]);
-  };
-
-  const submitForm = (contentType, data) => {
-    const currentDate = new Date();
-    const uid = Date.now();
-    const destinationBlob = `employees/${employeeUUID}/${currentDate.getFullYear()}-${currentDate.getMonth() +
-      1}-${currentDate.getDate()}/${uid}.mp3`;
-    axios({
-      url: `https://us-central1-voice-8ddf6.cloudfunctions.net/upload_blob?blob=${destinationBlob}`,
-      method: "POST",
-      data: data,
-      headers: {
-        "Content-Type": contentType,
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
-      }
-    })
-      .then(response => {
-        setTranscription(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-        setTranscription("Oops! There was an error. Try again.");
-      });
   };
 
   const uploadAndProcess = () => {
     const formData = new FormData();
     formData.append("file", file);
-    submitForm("multipart/form-data", formData);
+    setIsProcessing(true);
+    processAudio(employeeUUID, languageCode, formData)
+      .then(response => setTranscription(response))
+      .then(() => setIsProcessing(false));
   };
 
   return employees ? (
@@ -131,20 +114,32 @@ const Dashboard = ({ employees }) => {
       <div style={{ height: "70px" }} />
       <Grid container justify="center" spacing={6}>
         <Grid item>
-          <Options title={"Select language"} options={languages} />
+          <Options
+            title={"Select language"}
+            options={languages}
+            handleChange={setLanguageCode}
+          />
         </Grid>
       </Grid>
       <div style={{ height: "70px" }} />
       <Grid container justify="center" spacing={6}>
         <Grid item>
-          <input type="file" name="file" onChange={onChangeHandler} />
+          <input type="file" name="file" onChange={handleUpload} />
         </Grid>
       </Grid>
       <div style={{ height: "70px" }} />
       <Grid container justify="center">
-        <Button variant="contained" color="primary" onClick={uploadAndProcess}>
-          Process
-        </Button>
+        {isProcessing ? (
+          <Loader />
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={uploadAndProcess}
+          >
+            Process
+          </Button>
+        )}
       </Grid>
       <div style={{ height: "70px" }} />
       {transcription ? (

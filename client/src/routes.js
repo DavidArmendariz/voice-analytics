@@ -5,7 +5,7 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import Unarchive from "@material-ui/icons/Unarchive";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
-import TableList from "views/TableList/TableList.js";
+import EmployeesList from "views/Employees/EmployeesList.js";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
@@ -29,7 +29,7 @@ const dashboardRoutes = [
     path: "/table",
     name: "EMPLOYEES",
     icon: "content_paste",
-    component: TableList,
+    component: EmployeesList,
     layout: "/admin"
   },
   {
