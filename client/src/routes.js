@@ -5,7 +5,7 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import Unarchive from "@material-ui/icons/Unarchive";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
-import EmployeesList from "views/Employees/EmployeesList.js";
+import Employees from "./views/Employees/Employees";
 import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
@@ -19,28 +19,28 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/user",
+    path: "/configuration",
     name: "CONFIGURATION",
     icon: Person,
     component: UserProfile,
     layout: "/admin"
   },
   {
-    path: "/table",
+    path: "/employees",
     name: "EMPLOYEES",
     icon: "content_paste",
-    component: EmployeesList,
+    component: Employees,
     layout: "/admin"
   },
   {
-    path: "/typography",
+    path: "/sentiment-analysis",
     name: "SENTIMENT ANALYSIS",
     icon: LibraryBooks,
     component: Typography,
     layout: "/admin"
   },
   {
-    path: "/icons",
+    path: "/analytics",
     name: "ANALYTICS",
     icon: BubbleChart,
     component: Icons,

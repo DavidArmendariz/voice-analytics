@@ -10,6 +10,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectEmployeesAsTable } from "../../redux/employees/employees.selectors";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   table: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles({
   }
 });
 
-const EmployeesList = ({ employees }) => {
+const EmployeesList = ({ employees, match }) => {
   const classes = useStyles();
 
   return (
@@ -34,7 +35,7 @@ const EmployeesList = ({ employees }) => {
           <TableBody>
             {employees.map(row => (
               <TableRow key={row.name}>
-                <TableCell>{row.name}</TableCell>
+                <TableCell><Link to={`${match.path}/${row.uid}`}>{row.name}</Link></TableCell>
                 <TableCell>{row.uid}</TableCell>
                 <TableCell>{row.score}</TableCell>
               </TableRow>

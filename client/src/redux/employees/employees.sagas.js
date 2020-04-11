@@ -1,6 +1,9 @@
 import { takeLatest, call, put, all } from "redux-saga/effects";
 import EmployeesActionTypes from "./employees.types";
-import { firestore, getDocumentsFromSnapshot } from "../../firebase/firebase.utils";
+import {
+  firestore,
+  getDocumentsFromSnapshot
+} from "../../firebase/firebase.utils";
 import {
   fetchEmployeesSuccess,
   fetchEmployeesFailure
