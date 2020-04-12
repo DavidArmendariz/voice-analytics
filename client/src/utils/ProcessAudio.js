@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const processAudio = async (employeeUUID, languageCode, data) => {
+const processAudio = async (customerUID, employeeUID, languageCode, data) => {
   const currentDate = new Date();
   const uid = Date.now();
-  const destinationBlob = `employees/${employeeUUID}/${currentDate.getFullYear()}-${currentDate.getMonth() +
+  const destinationBlob = `customers/${customerUID}/employees/${employeeUID}/${currentDate.getFullYear()}-${currentDate.getMonth() +
     1}-${currentDate.getDate()}/${uid}.mp3`;
   try {
     let getMetadata = await axios({
@@ -27,7 +27,6 @@ const processAudio = async (employeeUUID, languageCode, data) => {
       }
     });
     let getTranscript = await axios({
-      // url: `http://0.0.0.0:8081/long_speech_to_text?uri=${destinationBlob}&language=${languageCode}&rate=${rate}`,
       url: `https://us-central1-voice-8ddf6.cloudfunctions.net/long_speech_to_text?uri=${destinationBlob}&language=${languageCode}&rate=${rate}`,
       method: "GET",
       headers: {
@@ -45,7 +44,7 @@ const processAudio = async (employeeUUID, languageCode, data) => {
       },
       data: {
         transcription: transcript,
-        reference: `employees/${employeeUUID}/transcriptions`,
+        reference: `customers/${customerUID}/employees/${employeeUID}/transcriptions`,
         length
       }
     });

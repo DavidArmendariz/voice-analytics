@@ -52,13 +52,17 @@ def store_transcriptions(request):
         transcription = request_json["transcription"]
         reference = request_json["reference"]
         audio_length = request_json["length"]
-        employees_collection, uid, transcription_collection = reference.split(
+        customer_collection, customer_uid, employees_collection, employee_uid, transcription_collection = reference.split(
             "/")
         data = {"transcription": transcription,
                 "date": firestore.SERVER_TIMESTAMP,
                 "audioLength": audio_length}
-        db.collection(employees_collection).document(
-            uid).collection(transcription_collection).add(data)
+        db.collection(customer_collection)\
+        .document(customer_uid)\
+        .collection(employees_collection)\
+        .document(employee_uid)\
+        .collection(transcription_collection)\
+        .add(data)
         print(f"Sucessfully stored transcription in {reference}")
         return Response("OK", 200, headers)
     except Exception as e:

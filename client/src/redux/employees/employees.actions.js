@@ -1,7 +1,8 @@
 import EmployeesActionTypes from "./employees.types";
 
-export const fetchEmployeesStart = () => ({
-  type: EmployeesActionTypes.FETCH_EMPLOYEES_START
+export const fetchEmployeesStart = uid => ({
+  type: EmployeesActionTypes.FETCH_EMPLOYEES_START,
+  uid
 });
 
 export const fetchEmployeesSuccess = employees => ({

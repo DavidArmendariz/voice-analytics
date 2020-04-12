@@ -9,9 +9,12 @@ import {
   fetchEmployeesFailure
 } from "./employees.actions";
 
-export function* fetchEmployees() {
+export function* fetchEmployees({ uid }) {
   try {
-    const employeesReference = firestore.collection("employees");
+    const employeesReference = firestore
+      .collection("customers")
+      .doc(uid)
+      .collection("employees");
     const snapshot = yield employeesReference.get();
     const employees = yield call(getDocumentsFromSnapshot, snapshot);
     yield put(fetchEmployeesSuccess(employees));

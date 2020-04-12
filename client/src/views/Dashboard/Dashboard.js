@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {} from "../../redux/employees/employees.actions";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -10,14 +10,17 @@ import { languages } from "../../constants/Languages";
 import arrayToObject from "../../utils/ArrayToObject";
 import processAudio from "../../utils/ProcessAudio";
 import Loader from "react-loader-spinner";
+import { UserContext } from "../../providers/UserProvider";
 
 const Dashboard = ({ employees }) => {
   const [file, setFile] = useState(null);
   const [transcription, setTranscription] = useState(null);
-  const [employeeUUID, setEmployeeUUID] = useState(null);
+  const [employeeUID, setEmployeeUID] = useState(null);
   const [languageCode, setLanguageCode] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [metadata, setMetadata] = useState(null);
+  const user = useContext(UserContext);
+  const { uid: customerUID } = user;
 
   const handleUpload = event => {
     setFile(event.target.files[0]);
@@ -27,10 +30,10 @@ const Dashboard = ({ employees }) => {
     const formData = new FormData();
     formData.append("file", file);
     setIsProcessing(true);
-    processAudio(employeeUUID, languageCode, formData)
+    processAudio(customerUID, employeeUID, languageCode, formData)
       .then(response => {
         setTranscription(response["transcript"]);
-        setMetadata({audioLength: response["audioLength"]});
+        setMetadata({ audioLength: response["audioLength"] });
       })
       .then(() => setIsProcessing(false));
   };
@@ -111,7 +114,7 @@ const Dashboard = ({ employees }) => {
           <Options
             title={"Select employee"}
             options={arrayToObject(employees, "name", "uid")}
-            handleChange={setEmployeeUUID}
+            handleChange={setEmployeeUID}
           />
         </Grid>
       </Grid>
@@ -151,7 +154,9 @@ const Dashboard = ({ employees }) => {
           <Grid container justify="center">
             <Typography variant="h2">Metadata</Typography>
           </Grid>
-          <div style={{ height: "70px" }}>Audio length: {metadata["audioLength"].toFixed(2)} seconds.</div>
+          <div style={{ height: "70px" }}>
+            Audio length: {metadata["audioLength"].toFixed(2)} seconds.
+          </div>
         </Grid>
       ) : null}
       <div style={{ height: "70px" }} />

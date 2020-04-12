@@ -9,11 +9,13 @@ import {
   getDocumentsFromSnapshot
 } from "../../firebase/firebase.utils";
 
-export function* fetchTranscriptions({ uid }) {
+export function* fetchTranscriptions({ customerUID, employeeUID }) {
   try {
     const employeeReference = firestore
+      .collection("customers")
+      .doc(customerUID)
       .collection("employees")
-      .doc(uid)
+      .doc(employeeUID)
       .collection("transcriptions");
     const snapshot = yield employeeReference.get();
     const data = yield call(getDocumentsFromSnapshot, snapshot);
