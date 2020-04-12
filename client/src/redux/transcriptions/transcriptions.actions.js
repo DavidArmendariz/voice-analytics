@@ -5,9 +5,8 @@ export const fetchTranscriptionsStart = uid => ({
   uid
 });
 
-export const fetchTranscriptionsSuccess = (transcriptions, data) => ({
+export const fetchTranscriptionsSuccess = data => ({
   type: TranscriptionsActionTypes.FETCH_TRANSCRIPTIONS_SUCCESS,
-  transcriptions,
   data
 });
 

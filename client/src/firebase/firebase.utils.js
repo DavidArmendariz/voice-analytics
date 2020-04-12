@@ -12,8 +12,8 @@ const firebaseConfig = {
   appId: "1:604410782430:web:2f7d4d8ea0de0f8dcb584f"
 };
 
-export const getDocumentsFromSnapshot = (documents) => {
-  return documents.docs.map(doc => ({...doc.data(), uid: doc.id}));
+export const getDocumentsFromSnapshot = documents => {
+  return documents.docs.map(doc => ({ ...doc.data(), uid: doc.id }));
 };
 
 firebase.initializeApp(firebaseConfig);

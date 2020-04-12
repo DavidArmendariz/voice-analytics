@@ -1,7 +1,6 @@
 import TranscriptionsActionTypes from "./transcriptions.types";
 
 const INITIAL_STATE = {
-  transcriptions: null,
   data: null,
   isFetching: false,
   errorMessage: undefined
@@ -18,7 +17,6 @@ const transcriptionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isFetching: false,
-        transcriptions: action.transcriptions,
         data: action.data
       };
 

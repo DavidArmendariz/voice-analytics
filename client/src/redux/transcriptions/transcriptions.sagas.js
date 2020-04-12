@@ -16,8 +16,8 @@ export function* fetchTranscriptions({ uid }) {
       .doc(uid)
       .collection("transcriptions");
     const snapshot = yield employeeReference.get();
-    const transcriptions = yield call(getDocumentsFromSnapshot, snapshot);
-    yield put(fetchTranscriptionsSuccess(transcriptions));
+    const data = yield call(getDocumentsFromSnapshot, snapshot);
+    yield put(fetchTranscriptionsSuccess(data));
   } catch (error) {
     console.log(`Error in fetchTranscriptions: ${error}`);
     yield put(fetchTranscriptionsFailure(error.message));
