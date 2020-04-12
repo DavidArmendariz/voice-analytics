@@ -7,13 +7,16 @@ import store from "./redux/store";
 import App from "./App";
 import "assets/css/material-dashboard-react.css?v=1.8.0";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import UserProvider from "./providers/UserProvider";
 
 const hist = createBrowserHistory();
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={hist}>
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     </Router>
   </Provider>,
   document.getElementById("root")

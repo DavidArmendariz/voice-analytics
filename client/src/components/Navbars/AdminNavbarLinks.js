@@ -13,10 +13,11 @@ import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Button from "components/CustomButtons/Button.js";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
+import { auth } from "../../firebase/firebase.utils";
 
 const useStyles = makeStyles(styles);
 
-export default function AdminNavbarLinks() {
+const AdminNavbarLinks = () => {
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
@@ -56,7 +57,7 @@ export default function AdminNavbarLinks() {
           <span className={classes.notifications}>1</span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
-              Notificaciones
+              Notifications
             </p>
           </Hidden>
         </Button>
@@ -138,14 +139,14 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Configuración
+                      Configuration
                     </MenuItem>
                     <Divider light />
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={() => auth.signOut()}
                       className={classes.dropdownItem}
                     >
-                      Salir
+                      Sign out
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
@@ -156,4 +157,6 @@ export default function AdminNavbarLinks() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminNavbarLinks;
