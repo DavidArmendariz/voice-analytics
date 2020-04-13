@@ -15,7 +15,7 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
         Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
       }
     });
-    const {length, rate} = getMetadata.data
+    const { length, rate } = getMetadata.data;
     // eslint-disable-next-line
     let uploadToStorage = await axios({
       url: `https://us-central1-voice-8ddf6.cloudfunctions.net/upload_blob?blob=${destinationBlob}`,
@@ -34,6 +34,23 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
       }
     });
     const transcript = getTranscript.data;
+
+    // let getKeywords = await axios({
+    //   url: "http://0.0.0.0:8084/",
+    //   method: "POST",
+    //   data: {
+    //     transcription: transcript,
+    //     language: languageCode
+    //   },
+    //   headers: {
+    //     Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
+    //   }
+    // });
+
+    // const keywords = getKeywords.data;
+    const keywords = { Lenin: 0.7 };
+    console.log(keywords);
+
     // eslint-disable-next-line
     let storeTranscript = await axios({
       url:
@@ -45,10 +62,11 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
       data: {
         transcription: transcript,
         reference: `customers/${customerUID}/employees/${employeeUID}/transcriptions`,
-        length
+        length,
+        keywords
       }
     });
-    return {transcript, audioLength: length};
+    return { transcript, audioLength: length };
   } catch (error) {
     console.log(error);
     return "Oops! There was an error. Try again.";

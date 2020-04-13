@@ -1,8 +1,7 @@
-from google.cloud import storage
 from flask import abort, Response
+# from rake_nltk import Metric, Rake
 import os
-import firebase_admin
-from firebase_admin import firestore
+import json
 
 
 def get_bearer_token(request):
@@ -23,7 +22,7 @@ def get_bearer_token(request):
     return bearer_token
 
 
-def store_transcriptions(request):
+def keyword_extraction(request):
     if request.method == "OPTIONS":
         headers = {
             'Access-Control-Allow-Origin': "*",
@@ -43,29 +42,17 @@ def store_transcriptions(request):
     if bearer_token != secret_key:
         abort(Response("Invalid bearer token", 401, headers))
     try:
-        try:
-            firebase_admin.initialize_app()
-        except:
-            print("Firebase App already initialized")
-        db = firestore.client()
-        request_json = request.get_json()
-        transcription = request_json["transcription"]
-        reference = request_json["reference"]
-        audio_length = request_json["length"]
-        keywords = request_json["keywords"]
-        customer_collection, customer_uid, employees_collection, employee_uid, transcription_collection = reference.split(
-            "/")
-        data = {"transcription": transcription,
-                "date": firestore.SERVER_TIMESTAMP,
-                "audioLength": audio_length, 
-                "keywords": keywords}
-        db.collection(customer_collection)\
-        .document(customer_uid)\
-        .collection(employees_collection)\
-        .document(employee_uid)\
-        .collection(transcription_collection)\
-        .add(data)
-        print(f"Sucessfully stored transcription in {reference}")
+        # request_json = request.get_json()
+        # text = request_json["transcription"]
+        # language_code = "spanish"
+        # rake = Rake(language=language_code, min_length=2, max_length=4)
+        # rake.extract_keywords_from_text(text)
+        # keywords = rake.get_ranked_phrases_with_scores()
+        # keywords_json = dict()
+        # for keyword in keywords:
+        #     keywords_json[keyword[1]] = keyword[0]
+        # keywords_json = json.dumps(keywords_json)
+        # return Response(keywords_json, 200, headers)
         return Response("OK", 200, headers)
     except Exception as e:
         print(f"Error: {e}")

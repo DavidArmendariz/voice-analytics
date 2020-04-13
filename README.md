@@ -23,6 +23,11 @@ functions-framework --target=store_transcriptions --debug --source=store_transcr
 ```
 functions-framework --target=audio_metadata --debug --source=audio_metadata/main.py --port=8083
 ```
+#### For extracting keywords:
+```
+functions-framework --target=keyword_extraction --debug --source=keyword_extraction/main.py --port=8084
+```
+
 
 ### Deploying Google Cloud Functions
 ```
@@ -44,4 +49,8 @@ gcloud functions deploy store_transcriptions --env-vars-file .env.yaml --runtime
 #### For getting the metadata of the audio:
 ```
 gcloud functions deploy audio_metadata --env-vars-file .env.yaml --runtime python37 --trigger-http
+```
+#### For extracting the keywords of the audio:
+```
+gcloud functions deploy keyword_extraction --env-vars-file .env.yaml --runtime python37 --trigger-http
 ```

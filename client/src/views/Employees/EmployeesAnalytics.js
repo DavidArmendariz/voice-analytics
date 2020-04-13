@@ -1,39 +1,31 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { connect } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
 import { selecEmployeeById } from "../../redux/employees/employees.selectors";
 import { fetchTranscriptionsStart } from "../../redux/transcriptions/transcriptions.actions";
 import Grid from "@material-ui/core/Grid";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import TableContainer from "@material-ui/core/TableContainer";
 import sumDocuments from "analytics/sumDocuments";
 import SimpleCard from "components/SimpleCard/SimpleCard";
 import determineUnitsOfTime from "analytics/determineUnitsOfTime";
 import transformDataForSimpleLineChart from "../../analytics/transformDataForSimpleLineChart";
 import SimpleLineChart from "../../components/SimpleLineChart/SimpleLineChart";
 import { Typography } from "@material-ui/core";
-import { UserContext } from "../../providers/UserProvider";
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650
-  }
-});
+import { UserContext } from "providers/UserProvider";
+import CustomTable from "components/CustomTable/CustomTable";
+import StartEndDatePicker from "components/DatePicker/DatePicker";
+import millisecondsPerDay from "constants/Milliseconds";
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
-  const classes = useStyles();
-  const user = useContext(UserContext);
-  const { uid: customerUID } = user;
+  const { uid: customerUID } = useContext(UserContext);
+  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    new Date(endDate.getTime() - 7 * millisecondsPerDay)
+  );
   useEffect(() => {
-    if (employee) {
+    if (customerUID && employee) {
       fetchTranscriptionsStart(customerUID, employee.uid);
     }
   }, [employee, customerUID, fetchTranscriptionsStart]);
+  // Data for our graphs and tables
   let audioLength = data ? sumDocuments(data, "audioLength").toFixed(2) : 0;
   const {
     units: unitsAudioLength,
@@ -50,8 +42,18 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
     : null;
   return employee && data ? (
     <div>
-      <Grid container item justify="center">
-        Employee: {employee.name}
+      <Grid container item justify="center" style={{ height: "70px" }}>
+        <Typography variant="h4" gutterBottom>
+          Employee: {employee.name}
+        </Typography>
+      </Grid>
+      <Grid container item justify="center" style={{ height: "70px" }}>
+        <StartEndDatePicker
+          startDate={startDate}
+          endDate={endDate}
+          handleStartDate={setStartDate}
+          handleEndDate={setEndDate}
+        />
       </Grid>
       <Grid container>
         <Grid item>
@@ -62,7 +64,7 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
           />
         </Grid>
       </Grid>
-      <div style={{ height: "100px" }} />
+      <div style={{ height: "40px" }} />
       <Grid container>
         <Grid item>
           <SimpleCard title={"Audio length in time"}>
@@ -71,29 +73,17 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
         </Grid>
       </Grid>
       <div style={{ height: "100px" }} />
+      <Grid container></Grid>
       <Grid container item justify="center">
-        <Typography variant="h3">Latest transcriptions</Typography>
+        <Typography variant="h4" gutterBottom>
+          Latest transcriptions
+        </Typography>
       </Grid>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Transcription</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.transcription}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <CustomTable headers={["Date", "Transcription"]} rows={rows} />
     </div>
-  ) : null;
+  ) : (
+    <div>No data available for this employee.</div>
+  );
 };
 
 const mapStateToProps = (state, ownProps) => ({

@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import extractKeys from "../../utils/ExtractKeys";
 
 const SimpleLineChart = ({ data, xAxisDataKey = "date" }) => {
@@ -24,7 +16,6 @@ const SimpleLineChart = ({ data, xAxisDataKey = "date" }) => {
         bottom: 5
       }}
     >
-      <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey={xAxisDataKey} />
       <YAxis />
       <Tooltip />

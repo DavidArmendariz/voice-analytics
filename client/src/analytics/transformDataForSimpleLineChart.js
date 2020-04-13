@@ -1,8 +1,12 @@
+import moment from "moment";
+
 const transformDataForSimpleLineChart = (documents, xAxisDataKey, series) => {
   return documents.map(document => {
     let extractedKeys;
     if (xAxisDataKey === "date") {
-      extractedKeys = { [xAxisDataKey]: document[xAxisDataKey].toDate() };
+      extractedKeys = {
+        [xAxisDataKey]: moment(document[xAxisDataKey].toDate()).format("DD/MM/YYYY")
+      };
     } else {
       extractedKeys = { [xAxisDataKey]: document[xAxisDataKey] };
     }

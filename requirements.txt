@@ -6,3 +6,6 @@ wheel
 functions-framework
 firebase-admin
 mutagen
+boto3
+rake-nltk
+nltk
