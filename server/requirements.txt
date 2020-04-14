@@ -9,3 +9,5 @@ mutagen
 boto3
 rake-nltk
 nltk
+PyJWT
+Flask-SQLAlchemy
