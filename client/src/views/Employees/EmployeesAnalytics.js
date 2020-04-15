@@ -13,6 +13,8 @@ import { UserContext } from "providers/UserProvider";
 import CustomTable from "components/CustomTable/CustomTable";
 import StartEndDatePicker from "components/DatePicker/DatePicker";
 import millisecondsPerDay from "constants/Milliseconds";
+import extractKeywords from "utils/ExtractKeywords";
+import WordCloud from "components/WordCloud/WordCloud";
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const { uid: customerUID } = useContext(UserContext);
@@ -40,6 +42,7 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const audioLengthInTime = data
     ? transformDataForSimpleLineChart(data, "date", ["audioLength"])
     : null;
+  const keywords = data ? extractKeywords(data) : null;
   return employee && data ? (
     <div>
       <Grid container item justify="center" style={{ height: "70px" }}>
@@ -69,6 +72,14 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
         <Grid item>
           <SimpleCard title={"Audio length in time"}>
             <SimpleLineChart data={audioLengthInTime} />
+          </SimpleCard>
+        </Grid>
+      </Grid>
+      <div style={{ height: "100px" }} />
+      <Grid container>
+        <Grid item>
+          <SimpleCard title={"Top keywords"}>
+            <WordCloud words={keywords} />
           </SimpleCard>
         </Grid>
       </Grid>
