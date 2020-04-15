@@ -1,7 +1,7 @@
 {
-  "name": "material-dashboard-react",
+  "name": "voice-coast",
   "version": "1.8.0",
-  "description": "Material Dashboard React. Coded by Creative Tim",
+  "description": "Voice Coast by David Armendariz",
   "private": false,
   "main": "dist/index.js",
   "dependencies": {

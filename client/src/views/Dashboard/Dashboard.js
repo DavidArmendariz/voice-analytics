@@ -32,8 +32,12 @@ const Dashboard = ({ employees }) => {
     setIsProcessing(true);
     processAudio(customerUID, employeeUID, languageCode, formData)
       .then(response => {
-        setTranscription(response["transcript"]);
-        setMetadata({ audioLength: response["audioLength"] });
+        if (response) {
+          setTranscription(response["transcription"]);
+          setMetadata({ audioLength: response["audioLength"] });
+        } else {
+          setTranscription("Oops, there was an error, try again later!");
+        }
       })
       .then(() => setIsProcessing(false));
   };

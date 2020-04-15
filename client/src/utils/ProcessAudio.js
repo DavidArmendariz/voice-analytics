@@ -6,8 +6,8 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
   const destinationBlob = `customers/${customerUID}/employees/${employeeUID}/${currentDate.getFullYear()}-${currentDate.getMonth() +
     1}-${currentDate.getDate()}/${uid}.mp3`;
   try {
-    let getMetadata = await axios({
-      url: "https://us-central1-voice-8ddf6.cloudfunctions.net/audio_metadata",
+    let getAudioMetadata = await axios({
+      url: "http://0.0.0.0:8080/get_audio_metadata",
       method: "POST",
       data: data,
       headers: {
@@ -15,10 +15,10 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
         Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
       }
     });
-    const { length, rate } = getMetadata.data;
+    const { audioLength, sampleRate } = getAudioMetadata.data;
     // eslint-disable-next-line
-    let uploadToStorage = await axios({
-      url: `https://us-central1-voice-8ddf6.cloudfunctions.net/upload_blob?blob=${destinationBlob}`,
+    let uploadBlob = await axios({
+      url: `http://0.0.0.0:8080/upload_blob?blob=${destinationBlob}`,
       method: "POST",
       data: data,
       headers: {
@@ -27,49 +27,49 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
       }
     });
     let getTranscript = await axios({
-      url: `https://us-central1-voice-8ddf6.cloudfunctions.net/long_speech_to_text?uri=${destinationBlob}&language=${languageCode}&rate=${rate}`,
-      method: "GET",
+      url: "http://0.0.0.0:8080/get_transcript",
+      method: "POST",
+      data: { blob: destinationBlob, languageCode, sampleRate },
       headers: {
         Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
       }
     });
-    const transcript = getTranscript.data;
+    const { transcription } = getTranscript.data;
 
-    // let getKeywords = await axios({
-    //   url: "http://0.0.0.0:8084/",
-    //   method: "POST",
-    //   data: {
-    //     transcription: transcript,
-    //     language: languageCode
-    //   },
-    //   headers: {
-    //     Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
-    //   }
-    // });
+    let getKeywords = await axios({
+      url: "http://0.0.0.0:8080/get_keywords",
+      method: "POST",
+      data: {
+        transcription,
+        languageCode
+      },
+      headers: {
+        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
+      }
+    });
 
-    // const keywords = getKeywords.data;
-    const keywords = { Lenin: 0.7 };
-    console.log(keywords);
+    const keywords = getKeywords.data;
 
     // eslint-disable-next-line
     let storeTranscript = await axios({
       url:
-        "https://us-central1-voice-8ddf6.cloudfunctions.net/store_transcriptions",
+        "http://0.0.0.0:8080/store_data",
       method: "POST",
       headers: {
         Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68"
       },
       data: {
-        transcription: transcript,
         reference: `customers/${customerUID}/employees/${employeeUID}/transcriptions`,
-        length,
+        transcription,
+        audioLength,
+        sampleRate,
         keywords
       }
     });
-    return { transcript, audioLength: length };
+    return { transcription, audioLength, sampleRate };
   } catch (error) {
     console.log(error);
-    return "Oops! There was an error. Try again.";
+    return null;
   }
 };
 
