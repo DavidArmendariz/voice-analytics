@@ -35,7 +35,6 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   }, [employee, customerUID, startDate, endDate, fetchTranscriptionsStart]);
 
   // Data for our graphs and tables
-  console.log(data);
   const audioLength =
     data.length && determineUnitsOfTime(sumDocuments(data, "audioLength"));
   const averageAudioLength =

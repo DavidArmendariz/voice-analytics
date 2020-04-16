@@ -13,6 +13,7 @@ from content_classifier.content_classifier import _content_classifier
 from get_translation.get_translation import _get_translation
 from get_sentiment.get_sentiment import _get_sentiment
 from store_employee.store_employee import _store_employee
+from delete_employee.delete_employee import _delete_employee
 
 load_dotenv()
 try:
@@ -120,6 +121,15 @@ def store_employee():
     reference = data.get("reference")
     del data["reference"]
     _store_employee(reference, data)
+    return "OK", 200
+
+
+@app.route("/delete_employee", methods=["POST"])
+@token_required
+def delete_employee():
+    data = request.get_json()
+    reference = data.get("reference")
+    _delete_employee(reference)
     return "OK", 200
 
 

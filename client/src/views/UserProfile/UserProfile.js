@@ -8,6 +8,9 @@ import Button from "@material-ui/core/Button";
 import CustomizedSnackbars from "components/CustomSnackbar/CustomSnackbar";
 import { UserContext } from "../../providers/UserProvider";
 import axios from "axios";
+import { connect } from "react-redux";
+import Options from "../../components/Select/Select";
+import arrayToObject from "utils/ArrayToObject";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,13 +24,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserProfile = () => {
+const UserProfile = ({ employees }) => {
   const classes = useStyles();
   const [name, setName] = React.useState("David");
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const { uid: customerUID } = React.useContext(UserContext);
-
+  const [employeeUID, setEmployeeUID] = React.useState("");
+  
   const onChangeHandler = (event) => {
     const { name, value } = event.currentTarget;
     if (name === "name") {
@@ -56,7 +60,32 @@ const UserProfile = () => {
       setOpen(true);
     }
   };
-  return (
+
+  const onDeleteClick = async (event) => {
+    event.preventDefault();
+    try {
+      // eslint-disable-next-line
+      let storeEmployee = await axios({
+        url: `http://0.0.0.0:8080/delete_employee`,
+        method: "POST",
+        data: {
+          reference: `customers/${customerUID}/employees/${employeeUID}/transcriptions`,
+          name,
+        },
+        headers: {
+          Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
+        },
+      });
+      setMessage("Employee deleted sucessfully");
+      setOpen(true);
+    } catch (error) {
+      setMessage("Oops! Something went wrong. Try again.");
+      setOpen(true);
+    }
+  };
+
+
+  return employees ? (
     <Grid container>
       <Grid container justify="center">
         <Grid item>
@@ -88,29 +117,25 @@ const UserProfile = () => {
         </form>
       </Grid>
       <Grid container justify="center">
-        <Grid item>
-          <Typography variant="h3" gutterBottom>
-            Delete employee
-          </Typography>
-        </Grid>
+        <Typography variant="h3" gutterBottom>
+          Delete employee
+        </Typography>
       </Grid>
       <Grid container justify="center">
         <form className={classes.root} noValidate autoComplete="off">
-          <TextField
-            required
-            name="name"
-            id="name"
-            label="Name"
-            defaultValue={name}
-            onChange={(event) => onChangeHandler(event)}
+          <Options
+            title={"Select employee"}
+            options={arrayToObject(employees, "name", "uid")}
+            handleChange={setEmployeeUID}
           />
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(event) => onCreateClick(event)}
+            onClick={(event) => onDeleteClick(event)}
           >
             Delete
           </Button>
@@ -118,7 +143,11 @@ const UserProfile = () => {
       </Grid>
       <CustomizedSnackbars message={message} open={open} setOpen={setOpen} />
     </Grid>
-  );
+  ) : null;
 };
 
-export default UserProfile;
+const mapStateToProps = (store) => ({
+  employees: store.employees.employees,
+});
+
+export default connect(mapStateToProps)(UserProfile);
