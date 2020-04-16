@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Options from "../../components/Select/Select";
 import { languages } from "../../constants/Languages";
 import arrayToObject from "../../utils/ArrayToObject";
-import processAudio from "../../utils/ProcessAudio";
+import processAudio from "../../utils/processAudio";
 import Loader from "react-loader-spinner";
 import { UserContext } from "../../providers/UserProvider";
 
@@ -17,8 +17,7 @@ const Dashboard = ({ employees }) => {
   const [languageCode, setLanguageCode] = React.useState(null);
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [metadata, setMetadata] = React.useState(null);
-  const user = React.useContext(UserContext);
-  const { uid: customerUID } = user;
+  const { uid: customerUID } = React.useContext(UserContext);
 
   const handleUpload = (event) => {
     setFile(event.target.files[0]);

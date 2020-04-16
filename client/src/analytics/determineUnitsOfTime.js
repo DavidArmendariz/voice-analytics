@@ -4,7 +4,7 @@ const determineUnitsOfTime = (time) => {
   const seconds = ~~time % 60;
   const timeFormatted = `${hours ? `${hours}:` : ""}${
     minutes ? `${minutes}:` : ""
-  }${seconds}`;
+  }${seconds < 10 ? `0${seconds}` : seconds}`;
   let units = "sec";
   if (hours && minutes && seconds) {
     units = "hrs";

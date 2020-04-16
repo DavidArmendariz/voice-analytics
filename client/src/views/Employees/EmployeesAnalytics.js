@@ -16,13 +16,18 @@ import { millisecondsPerDay } from "constants/math.constants";
 import convertDataForWordCloud from "analytics/convertDataForWordCloud";
 import WordCloud from "components/WordCloud/WordCloud";
 import { handleStartDateChange, handleEndDateChange } from "utils/dateHandlers";
+import determinateSentimentIcon from "analytics/determineSentimentIcon";
+import ExportButton from "components/ExportButton/ExportButton";
+
+const today = new Date();
+today.setHours(23, 59, 59);
+const lastWeek = new Date(today.getTime() - 7 * millisecondsPerDay);
+lastWeek.setHours(0, 0, 0);
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const { uid: customerUID } = useContext(UserContext);
-  const [endDate, setEndDate] = useState(new Date());
-  const [startDate, setStartDate] = useState(
-    new Date(endDate.getTime() - 7 * millisecondsPerDay)
-  );
+  const [endDate, setEndDate] = useState(today);
+  const [startDate, setStartDate] = useState(lastWeek);
   useEffect(() => {
     if (customerUID && employee) {
       fetchTranscriptionsStart(customerUID, employee.uid, startDate, endDate);
@@ -30,6 +35,7 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   }, [employee, customerUID, startDate, endDate, fetchTranscriptionsStart]);
 
   // Data for our graphs and tables
+  console.log(data);
   const audioLength =
     data.length && determineUnitsOfTime(sumDocuments(data, "audioLength"));
   const averageAudioLength =
@@ -37,12 +43,24 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
     determineUnitsOfTime(sumDocuments(data, "audioLength", true));
   const rows =
     data.length &&
-    data.map(({ date, transcription, categories, keywords }) => ({
+    data.map(({ date, transcription, categories, keywords, sentiment }) => ({
       date: date.toDate().toLocaleDateString(),
       transcription,
       categories: Object.keys(categories).join(", "),
       keywords: Object.keys(keywords).join(", "),
+      sentiment: determinateSentimentIcon(sentiment.documentSentimentScore),
     }));
+  const exportedRows =
+    data.length &&
+    data.map(({ date, transcription, categories, keywords, sentiment }) => {
+      return [
+        date.toDate().toLocaleDateString(),
+        transcription,
+        Object.keys(categories).join(", "),
+        Object.keys(keywords).join(", "),
+        sentiment.documentSentimentScore,
+      ];
+    });
   const audioLengthInTime =
     data.length &&
     transformDataForSimpleLineChart(data, "date", ["audioLength"]);
@@ -115,7 +133,6 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
           </SimpleCard>
         </Grid>
       </Grid>
-      <div style={{ height: "100px" }} />
       <Grid container spacing={6}>
         <Grid item>
           <SimpleCard title={"Top keywords"}>
@@ -134,8 +151,26 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
           Latest transcriptions
         </Typography>
       </Grid>
+      <Grid container item justify="flex-end" style={{ height: "70px" }}>
+        <ExportButton
+          headers={[
+            "Date",
+            "Transcription",
+            "Categories",
+            "Keywords",
+            "Sentiment",
+          ]}
+          data={exportedRows}
+        />
+      </Grid>
       <CustomTable
-        headers={["Date", "Transcription", "Categories", "Keywords"]}
+        headers={[
+          "Date",
+          "Transcription",
+          "Categories",
+          "Keywords",
+          "Sentiment",
+        ]}
         rows={rows}
       />
     </React.Fragment>
@@ -145,8 +180,12 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
         <StartEndDatePicker
           startDate={startDate}
           endDate={endDate}
-          handleStartDate={handleStartDateChange}
-          handleEndDate={handleEndDateChange}
+          handleStartDate={(date) =>
+            handleStartDateChange(date, endDate, setStartDate)
+          }
+          handleEndDate={(date) =>
+            handleEndDateChange(date, startDate, setEndDate)
+          }
         />
       </Grid>
       No data available for this employee.

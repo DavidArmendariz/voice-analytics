@@ -4,7 +4,7 @@ from firebase_admin import firestore
 
 def _store_data(reference, data):
     """
-        reference: /employees/INjzmr37Ik1fHZMGl0kO/transcriptions
+        reference: customers/customerUID/employees/employeeUID/transcriptions
     """
     db = firestore.client()
     customers_collection, customer_uid, employees_collection, employee_uid, transcriptions_collection = reference.split("/")

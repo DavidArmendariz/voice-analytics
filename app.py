@@ -12,6 +12,7 @@ from store_data.store_data import _store_data
 from content_classifier.content_classifier import _content_classifier
 from get_translation.get_translation import _get_translation
 from get_sentiment.get_sentiment import _get_sentiment
+from store_employee.store_employee import _store_employee
 
 load_dotenv()
 try:
@@ -22,6 +23,7 @@ except ValueError:
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/get_audio_metadata", methods=["POST"])
 @token_required
 def get_audio_metadata():
@@ -31,6 +33,7 @@ def get_audio_metadata():
     path_to_file = os.path.abspath(temp_path)
     metadata = _audio_metadata(source_file)
     return jsonify(metadata)
+
 
 @app.route("/upload_blob", methods=["POST"])
 @token_required
@@ -43,6 +46,7 @@ def upload_blob():
     _upload_blob(bucket_name, temp_path, destination_blob)
     return "Uploaded blob succesfully", 200
 
+
 @app.route("/get_transcription", methods=["POST"])
 @token_required
 def get_transcript():
@@ -50,8 +54,10 @@ def get_transcript():
     storage_uri = data.get("blob")
     language_code = data.get("languageCode")
     sample_rate_hertz = int(data.get("sampleRate"))
-    transcription = _get_transcript(storage_uri, language_code, sample_rate_hertz)
+    transcription = _get_transcript(
+        storage_uri, language_code, sample_rate_hertz)
     return jsonify({"transcription": transcription})
+
 
 @app.route("/get_keywords", methods=["POST"])
 @token_required
@@ -63,6 +69,7 @@ def get_keywords():
     keywords = _get_keywords(transcription, language_code)
     return jsonify(keywords)
 
+
 @app.route("/store_data", methods=["POST"])
 @token_required
 def store_data():
@@ -71,6 +78,7 @@ def store_data():
     del data["reference"]
     _store_data(reference, data)
     return "Stored data in Firestore succesfully", 200
+
 
 @app.route("/content_classifier", methods=["POST"])
 @token_required
@@ -83,6 +91,7 @@ def content_classifier():
     categories = _content_classifier(text, language_code)
     return jsonify(categories)
 
+
 @app.route("/get_translation", methods=["POST"])
 @token_required
 def get_translation():
@@ -90,6 +99,7 @@ def get_translation():
     text = data.get("transcription")
     translation = _get_translation(text)
     return jsonify({"translation": translation})
+
 
 @app.route("/get_sentiment", methods=["POST"])
 @token_required
@@ -101,6 +111,17 @@ def get_sentiment():
         language_code = language_code.split("-")[0]
     result = _get_sentiment(text, language_code)
     return jsonify(result)
+
+
+@app.route("/store_employee", methods=["POST"])
+@token_required
+def store_employee():
+    data = request.get_json()
+    reference = data.get("reference")
+    del data["reference"]
+    _store_employee(reference, data)
+    return "OK", 200
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get('PORT', 8080)))
