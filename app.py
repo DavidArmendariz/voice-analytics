@@ -11,6 +11,7 @@ from get_keywords.get_keywords import _get_keywords
 from store_data.store_data import _store_data
 from content_classifier.content_classifier import _content_classifier
 from get_translation.get_translation import _get_translation
+from get_sentiment.get_sentiment import _get_sentiment
 
 load_dotenv()
 try:
@@ -90,7 +91,16 @@ def get_translation():
     translation = _get_translation(text)
     return jsonify({"translation": translation})
 
-
+@app.route("/get_sentiment", methods=["POST"])
+@token_required
+def get_sentiment():
+    data = request.get_json()
+    text = data.get("transcription")
+    language_code = data.get("languageCode")
+    if language_code:
+        language_code = language_code.split("-")[0]
+    result = _get_sentiment(text, language_code)
+    return jsonify(result)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get('PORT', 8080)))
