@@ -16,7 +16,7 @@ const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
-const CustomizedSnackbars = ({ message, open, setOpen }) => {
+const CustomizedSnackbars = ({ message, open, setOpen, severity }) => {
   const classes = useStyles();
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -27,8 +27,13 @@ const CustomizedSnackbars = ({ message, open, setOpen }) => {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
-        <Alert onClose={handleClose} severity="success">
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity={severity}>
           {message}
         </Alert>
       </Snackbar>

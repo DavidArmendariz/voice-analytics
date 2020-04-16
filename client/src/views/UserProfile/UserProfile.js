@@ -31,7 +31,8 @@ const UserProfile = ({ employees }) => {
   const [message, setMessage] = React.useState("");
   const { uid: customerUID } = React.useContext(UserContext);
   const [employeeUID, setEmployeeUID] = React.useState("");
-  
+  const [severity, setSeverity] = React.useState("");
+
   const onChangeHandler = (event) => {
     const { name, value } = event.currentTarget;
     if (name === "name") {
@@ -54,9 +55,11 @@ const UserProfile = ({ employees }) => {
         },
       });
       setMessage("Employee added sucessfully");
-      setOpen(true);
+      setSeverity("success");
     } catch (error) {
       setMessage("Oops! Something went wrong. Try again.");
+      setSeverity("error");
+    } finally {
       setOpen(true);
     }
   };
@@ -77,13 +80,14 @@ const UserProfile = ({ employees }) => {
         },
       });
       setMessage("Employee deleted sucessfully");
-      setOpen(true);
+      setSeverity("success");
     } catch (error) {
       setMessage("Oops! Something went wrong. Try again.");
+      setSeverity("error");
+    } finally {
       setOpen(true);
     }
   };
-
 
   return employees ? (
     <Grid container>
@@ -141,7 +145,12 @@ const UserProfile = ({ employees }) => {
           </Button>
         </form>
       </Grid>
-      <CustomizedSnackbars message={message} open={open} setOpen={setOpen} />
+      <CustomizedSnackbars
+        message={message}
+        open={open}
+        setOpen={setOpen}
+        severity={severity}
+      />
     </Grid>
   ) : null;
 };
