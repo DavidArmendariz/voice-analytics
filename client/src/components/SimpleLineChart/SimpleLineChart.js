@@ -1,9 +1,7 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts";
-import extractKeys from "../../utils/ExtractKeys";
 
-const SimpleLineChart = ({ data, xAxisDataKey = "date" }) => {
-  const series = extractKeys(data[0], xAxisDataKey);
+const SimpleLineChart = ({ data, options }) => {
   return (
     <LineChart
       width={500}
@@ -16,12 +14,12 @@ const SimpleLineChart = ({ data, xAxisDataKey = "date" }) => {
         bottom: 5
       }}
     >
-      <XAxis dataKey={xAxisDataKey} />
+      <XAxis dataKey={options.horizontalAxis} />
       <YAxis />
       <Tooltip />
       <Legend />
-      {series.map((dataKey, index) => (
-        <Line key={index} type="monotone" dataKey={dataKey} stroke="#82ca9d" />
+      {options.series.map((dataKey, index) => (
+        <Line key={index} type="monotone" dataKey={dataKey} name={options.seriesNames[dataKey]} stroke={options.colors[dataKey]} />
       ))}
     </LineChart>
   );

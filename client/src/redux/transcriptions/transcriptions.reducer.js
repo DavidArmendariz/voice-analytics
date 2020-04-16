@@ -1,7 +1,7 @@
 import TranscriptionsActionTypes from "./transcriptions.types";
 
 const INITIAL_STATE = {
-  data: null,
+  data: [],
   isFetching: false,
   errorMessage: undefined
 };

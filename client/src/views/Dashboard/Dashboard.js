@@ -1,6 +1,6 @@
 /*eslint-disable*/
 import React, { useState, useEffect, useContext } from "react";
-import {} from "../../redux/employees/employees.actions";
+import { } from "../../redux/employees/employees.actions";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -34,7 +34,7 @@ const Dashboard = ({ employees }) => {
       .then(response => {
         if (response) {
           setTranscription(response["transcription"]);
-          setMetadata({ audioLength: response["audioLength"] });
+          setMetadata({ audioLength: response["audioLength"], sampleRate: response["sampleRate"] });
         } else {
           setTranscription("Oops, there was an error, try again later!");
         }
@@ -143,14 +143,14 @@ const Dashboard = ({ employees }) => {
         {isProcessing ? (
           <Loader />
         ) : (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={uploadAndProcess}
-          >
-            Process
-          </Button>
-        )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={uploadAndProcess}
+            >
+              Process
+            </Button>
+          )}
       </Grid>
       <div style={{ height: "70px" }} />
       {metadata ? (
@@ -158,9 +158,12 @@ const Dashboard = ({ employees }) => {
           <Grid container justify="center">
             <Typography variant="h2">Metadata</Typography>
           </Grid>
-          <div style={{ height: "70px" }}>
+          <Grid item>
             Audio length: {metadata["audioLength"].toFixed(2)} seconds.
-          </div>
+          </Grid>
+          <Grid item>
+            Sample Rate: {metadata["sampleRate"]} Hertz.
+          </Grid>
         </Grid>
       ) : null}
       <div style={{ height: "70px" }} />

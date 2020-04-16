@@ -1,12 +1,10 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
-import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
 import Unarchive from "@material-ui/icons/Unarchive";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import Employees from "./views/Employees/Employees";
-import Typography from "views/Typography/Typography.js";
 import Icons from "views/Icons/Icons.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 
@@ -19,24 +17,10 @@ const dashboardRoutes = [
     layout: "/admin"
   },
   {
-    path: "/configuration",
-    name: "CONFIGURATION",
-    icon: Person,
-    component: UserProfile,
-    layout: "/admin"
-  },
-  {
     path: "/employees",
     name: "EMPLOYEES",
     icon: "content_paste",
     component: Employees,
-    layout: "/admin"
-  },
-  {
-    path: "/sentiment-analysis",
-    name: "SENTIMENT ANALYSIS",
-    icon: LibraryBooks,
-    component: Typography,
     layout: "/admin"
   },
   {
@@ -51,6 +35,13 @@ const dashboardRoutes = [
     name: "PRO",
     icon: Unarchive,
     component: UpgradeToPro,
+    layout: "/admin"
+  },
+  {
+    path: "/configuration",
+    name: "CONFIGURATION",
+    icon: Person,
+    component: UserProfile,
     layout: "/admin"
   }
 ];

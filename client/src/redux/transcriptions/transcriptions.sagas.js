@@ -9,19 +9,24 @@ import {
   getDocumentsFromSnapshot
 } from "../../firebase/firebase.utils";
 
-export function* fetchTranscriptions({ customerUID, employeeUID }) {
+export function* fetchTranscriptions({
+  customerUID,
+  employeeUID,
+  startDate,
+  endDate
+}) {
   try {
     const employeeReference = firestore
       .collection("customers")
       .doc(customerUID)
       .collection("employees")
       .doc(employeeUID)
-      .collection("transcriptions");
+      .collection("transcriptions")
+      .where("date", ">=", startDate)
+      .where("date", "<=", endDate);
     const snapshot = yield employeeReference.get();
     const data = yield call(getDocumentsFromSnapshot, snapshot);
-    if (data.length) {
-      yield put(fetchTranscriptionsSuccess(data));
-    }
+    yield put(fetchTranscriptionsSuccess(data));
   } catch (error) {
     console.log(`Error in fetchTranscriptions: ${error}`);
     yield put(fetchTranscriptionsFailure(error.message));

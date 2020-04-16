@@ -1,5 +1,6 @@
 google-cloud-storage
 google-cloud-speech
+google-cloud-language
 flask
 autopep8
 functions-framework
@@ -8,3 +9,4 @@ mutagen
 multi-rake
 python-dotenv
 flask-cors
+googletrans

@@ -12,6 +12,7 @@ const StartEndDatePicker = ({
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
+        autoOk
         label="Start Date"
         value={startDate}
         onChange={handleStartDate}

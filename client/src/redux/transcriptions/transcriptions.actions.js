@@ -1,9 +1,11 @@
 import TranscriptionsActionTypes from "./transcriptions.types";
 
-export const fetchTranscriptionsStart = (customerUID, employeeUID) => ({
+export const fetchTranscriptionsStart = (customerUID, employeeUID, startDate, endDate) => ({
   type: TranscriptionsActionTypes.FETCH_TRANSCRIPTIONS_START,
   customerUID,
-  employeeUID
+  employeeUID,
+  startDate,
+  endDate
 });
 
 export const fetchTranscriptionsSuccess = data => ({

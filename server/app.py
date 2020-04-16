@@ -9,6 +9,8 @@ from audio_metadata.audio_metadata import _audio_metadata
 from get_transcription.get_transcript import _get_transcript
 from get_keywords.get_keywords import _get_keywords
 from store_data.store_data import _store_data
+from content_classifier.content_classifier import _content_classifier
+from get_translation.get_translation import _get_translation
 
 load_dotenv()
 try:
@@ -40,22 +42,22 @@ def upload_blob():
     _upload_blob(bucket_name, temp_path, destination_blob)
     return "Uploaded blob succesfully", 200
 
-@app.route("/get_transcript", methods=["POST"])
+@app.route("/get_transcription", methods=["POST"])
 @token_required
 def get_transcript():
-    request_json = request.get_json()
-    storage_uri = request_json.get("blob")
-    language_code = request_json.get("languageCode")
-    sample_rate_hertz = int(request_json.get("sampleRate"))
+    data = request.get_json()
+    storage_uri = data.get("blob")
+    language_code = data.get("languageCode")
+    sample_rate_hertz = int(data.get("sampleRate"))
     transcription = _get_transcript(storage_uri, language_code, sample_rate_hertz)
     return jsonify({"transcription": transcription})
 
 @app.route("/get_keywords", methods=["POST"])
 @token_required
 def get_keywords():
-    request_json = request.get_json()
-    transcription = request_json.get("transcription")
-    language_code = request_json.get("languageCode")
+    data = request.get_json()
+    transcription = data.get("transcription")
+    language_code = data.get("languageCode")
     language_code = language_code.split("-")[0]
     keywords = _get_keywords(transcription, language_code)
     return jsonify(keywords)
@@ -68,6 +70,27 @@ def store_data():
     del data["reference"]
     _store_data(reference, data)
     return "Stored data in Firestore succesfully", 200
+
+@app.route("/content_classifier", methods=["POST"])
+@token_required
+def content_classifier():
+    data = request.get_json()
+    text = data.get("transcription")
+    language_code = data.get("languageCode")
+    if language_code:
+        language_code = language_code.split("-")[0]
+    categories = _content_classifier(text, language_code)
+    return jsonify(categories)
+
+@app.route("/get_translation", methods=["POST"])
+@token_required
+def get_translation():
+    data = request.get_json()
+    text = data.get("transcription")
+    translation = _get_translation(text)
+    return jsonify({"translation": translation})
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get('PORT', 8080)))

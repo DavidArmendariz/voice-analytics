@@ -92,9 +92,9 @@ const SignIn = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={event => {
-              signInWithEmailAndPasswordHandler(event, email, password);
-            }}
+            onClick={event =>
+              signInWithEmailAndPasswordHandler(event, email, password)
+            }
           >
             Sign In
           </Button>
