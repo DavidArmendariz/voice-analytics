@@ -12,9 +12,10 @@ import { Typography } from "@material-ui/core";
 import { UserContext } from "providers/UserProvider";
 import CustomTable from "components/CustomTable/CustomTable";
 import StartEndDatePicker from "components/StartEndDatePicker/StartEndDatePicker";
-import millisecondsPerDay from "constants/Milliseconds";
-import convertDataForWordCloud from "utils/ConvertDataForWordCloud";
+import { millisecondsPerDay } from "constants/math.constants";
+import convertDataForWordCloud from "analytics/convertDataForWordCloud";
 import WordCloud from "components/WordCloud/WordCloud";
+import { handleStartDateChange, handleEndDateChange } from "utils/dateHandlers";
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const { uid: customerUID } = useContext(UserContext);
@@ -28,47 +29,31 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
     }
   }, [employee, customerUID, startDate, endDate, fetchTranscriptionsStart]);
 
-  const handleStartDateChange = date => {
-    if (date > endDate) {
-      alert("Start date cannot be greater than end date");
-    } else {
-      setStartDate(date);
-    }
-  };
-
-  const handleEndDateChange = date => {
-    if (date < startDate) {
-      alert("End date cannot be less than end date");
-    } else {
-      setEndDate(date);
-    }
-  };
-
   // Data for our graphs and tables
-  const audioLength = data.length
-    ? sumDocuments(data, "audioLength").toFixed(2)
-    : 0;
-  const averageAudioLength = data.length ? sumDocuments(data, "audioLength", true).toFixed(2) : 0;
-  const {
-    units: unitsAudioLength,
-    total: totalAudioLength
-  } = determineUnitsOfTime(audioLength);
-  const rows = data.length
-    ? data.map(({ date, transcription, categories, keywords }) => ({
+  const audioLength =
+    data.length && determineUnitsOfTime(sumDocuments(data, "audioLength"));
+  const averageAudioLength =
+    data.length &&
+    determineUnitsOfTime(sumDocuments(data, "audioLength", true));
+  const rows =
+    data.length &&
+    data.map(({ date, transcription, categories, keywords }) => ({
       date: date.toDate().toLocaleDateString(),
       transcription,
       categories: Object.keys(categories).join(", "),
-      keywords: Object.keys(keywords).join(", ")
-    }))
-    : null;
-  const audioLengthInTime = data.length
-    ? transformDataForSimpleLineChart(data, "date", ["audioLength"])
-    : null;
-  const keywords = data.length ? convertDataForWordCloud(data, "keywords") : null;
-  const categories = data.length ? convertDataForWordCloud(data, "categories") : null;
+      keywords: Object.keys(keywords).join(", "),
+    }));
+  const audioLengthInTime =
+    data.length &&
+    transformDataForSimpleLineChart(data, "date", ["audioLength"]);
+  const averageAudioLenghtInTime =
+    data.length &&
+    transformDataForSimpleLineChart(data, "date", ["audioLength"], true);
+  const keywords = data.length && convertDataForWordCloud(data, "keywords");
+  const categories = data.length && convertDataForWordCloud(data, "categories");
 
   return employee && data.length ? (
-    <div>
+    <React.Fragment>
       <Grid container item justify="center" style={{ height: "70px" }}>
         <Typography variant="h4" gutterBottom>
           Employee: {employee.name}
@@ -78,38 +63,55 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
         <StartEndDatePicker
           startDate={startDate}
           endDate={endDate}
-          handleStartDate={handleStartDateChange}
-          handleEndDate={handleEndDateChange}
+          handleStartDate={(date) =>
+            handleStartDateChange(date, endDate, setStartDate)
+          }
+          handleEndDate={(date) =>
+            handleEndDateChange(date, startDate, setEndDate)
+          }
         />
       </Grid>
       <Grid container spacing={6}>
         <Grid item>
           <SimpleCard
             title="Total audio length"
-            content={totalAudioLength}
-            units={unitsAudioLength}
+            content={audioLength}
+            units=""
           />
         </Grid>
         <Grid item>
           <SimpleCard
             title="Average audio length"
             content={averageAudioLength}
-            units={unitsAudioLength}
+            units=""
           />
         </Grid>
       </Grid>
-      <div style={{ height: "40px" }} />
-      <Grid container>
+      <Grid container spacing={6}>
         <Grid item>
-          <SimpleCard title={"Audio length in time"}>
+          <SimpleCard title="Audio length in time">
             <SimpleLineChart
               data={audioLengthInTime}
               options={{
                 series: ["audioLength"],
                 horizontalAxis: "date",
-                seriesNames: { audioLength: "Audio Length" },
-                colors: { audioLength: "#000000" }
-              }} />
+                seriesNames: { audioLength: "Audio length" },
+                colors: { audioLength: "#000000" },
+              }}
+            />
+          </SimpleCard>
+        </Grid>
+        <Grid item>
+          <SimpleCard title="Average audio length in time">
+            <SimpleLineChart
+              data={averageAudioLenghtInTime}
+              options={{
+                series: ["audioLength"],
+                horizontalAxis: "date",
+                seriesNames: { audioLength: "Average audio length" },
+                colors: { audioLength: "#000000" },
+              }}
+            />
           </SimpleCard>
         </Grid>
       </Grid>
@@ -132,36 +134,36 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
           Latest transcriptions
         </Typography>
       </Grid>
-      <CustomTable headers={["Date", "Transcription", "Categories", "Keywords"]} rows={rows} />
-    </div>
+      <CustomTable
+        headers={["Date", "Transcription", "Categories", "Keywords"]}
+        rows={rows}
+      />
+    </React.Fragment>
   ) : (
-      <div>
-        <Grid container item justify="center" style={{ height: "70px" }}>
-          <StartEndDatePicker
-            startDate={startDate}
-            endDate={endDate}
-            handleStartDate={handleStartDateChange}
-            handleEndDate={handleEndDateChange}
-          />
-        </Grid>
+    <div>
+      <Grid container item justify="center" style={{ height: "70px" }}>
+        <StartEndDatePicker
+          startDate={startDate}
+          endDate={endDate}
+          handleStartDate={handleStartDateChange}
+          handleEndDate={handleEndDateChange}
+        />
+      </Grid>
       No data available for this employee.
-      </div>
-    );
+    </div>
+  );
 };
 
 const mapStateToProps = (state, ownProps) => ({
   employee: selecEmployeeById(ownProps.match.params.employeeUid)(state),
-  data: state.transcriptions.data
+  data: state.transcriptions.data,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   fetchTranscriptionsStart: (customerUID, employeeUID, startDate, endDate) =>
     dispatch(
       fetchTranscriptionsStart(customerUID, employeeUID, startDate, endDate)
-    )
+    ),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EmployeesAnalytics);
+export default connect(mapStateToProps, mapDispatchToProps)(EmployeesAnalytics);

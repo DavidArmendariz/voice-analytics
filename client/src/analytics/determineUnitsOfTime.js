@@ -1,12 +1,17 @@
-const determineUnitsOfTime = totalSum => {
-  if (totalSum < 60) {
-    return { units: "sec", total: totalSum };
+const determineUnitsOfTime = (time) => {
+  const hours = ~~(time / 3600);
+  const minutes = ~~((time % 3600) / 60);
+  const seconds = ~~time % 60;
+  const timeFormatted = `${hours ? `${hours}:` : ""}${
+    minutes ? `${minutes}:` : ""
+  }${seconds}`;
+  let units = "sec";
+  if (hours && minutes && seconds) {
+    units = "hrs";
+  } else if (!hours && minutes && seconds) {
+    units = "min";
   }
-  if (totalSum > 60 && totalSum < 3600) {
-    return { units: "min", total: totalSum / 60 };
-  } else {
-    return { units: "hrs", total: totalSum / 3600 };
-  }
+  return `${timeFormatted} ${units}`;
 };
 
 export default determineUnitsOfTime;

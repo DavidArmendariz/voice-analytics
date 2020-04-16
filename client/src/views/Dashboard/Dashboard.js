@@ -1,6 +1,4 @@
-/*eslint-disable*/
-import React, { useState, useEffect, useContext } from "react";
-import { } from "../../redux/employees/employees.actions";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
@@ -13,16 +11,16 @@ import Loader from "react-loader-spinner";
 import { UserContext } from "../../providers/UserProvider";
 
 const Dashboard = ({ employees }) => {
-  const [file, setFile] = useState(null);
-  const [transcription, setTranscription] = useState(null);
-  const [employeeUID, setEmployeeUID] = useState(null);
-  const [languageCode, setLanguageCode] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [metadata, setMetadata] = useState(null);
-  const user = useContext(UserContext);
+  const [file, setFile] = React.useState(null);
+  const [transcription, setTranscription] = React.useState(null);
+  const [employeeUID, setEmployeeUID] = React.useState(null);
+  const [languageCode, setLanguageCode] = React.useState(null);
+  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [metadata, setMetadata] = React.useState(null);
+  const user = React.useContext(UserContext);
   const { uid: customerUID } = user;
 
-  const handleUpload = event => {
+  const handleUpload = (event) => {
     setFile(event.target.files[0]);
   };
 
@@ -31,10 +29,13 @@ const Dashboard = ({ employees }) => {
     formData.append("file", file);
     setIsProcessing(true);
     processAudio(customerUID, employeeUID, languageCode, formData)
-      .then(response => {
+      .then((response) => {
         if (response) {
           setTranscription(response["transcription"]);
-          setMetadata({ audioLength: response["audioLength"], sampleRate: response["sampleRate"] });
+          setMetadata({
+            audioLength: response["audioLength"],
+            sampleRate: response["sampleRate"],
+          });
         } else {
           setTranscription("Oops, there was an error, try again later!");
         }
@@ -43,12 +44,13 @@ const Dashboard = ({ employees }) => {
   };
 
   return employees ? (
-    <div>
+    <React.Fragment>
       <Grid container alignItems="center" spacing={6}>
         <Grid item>
           <img
             style={{ width: "150px", height: "150px" }}
-            src={"/transcription.png"}
+            src="/transcription.png"
+            alt="transcription"
           />
         </Grid>
         <Grid container item xs={10}>
@@ -60,7 +62,8 @@ const Dashboard = ({ employees }) => {
         <Grid item>
           <img
             style={{ width: "150px", height: "150px" }}
-            src={"/conversation.png"}
+            src="/conversation.png"
+            alt="conversation"
           />
         </Grid>
         <Grid container item xs={10}>
@@ -72,7 +75,8 @@ const Dashboard = ({ employees }) => {
         <Grid item>
           <img
             style={{ width: "150px", height: "150px" }}
-            src={"/keywords.png"}
+            src="/keywords.png"
+            alt="keywords"
           />
         </Grid>
         <Grid container item xs={10}>
@@ -81,7 +85,11 @@ const Dashboard = ({ employees }) => {
       </Grid>
       <Grid container alignItems="center" spacing={6}>
         <Grid item>
-          <img style={{ width: "150px", height: "150px" }} src={"/spot.png"} />
+          <img
+            style={{ width: "150px", height: "150px" }}
+            src="/spot.png"
+            alt="spot"
+          />
         </Grid>
         <Grid container item xs={10}>
           Spot keywords and phrases important to your business brand.
@@ -91,7 +99,8 @@ const Dashboard = ({ employees }) => {
         <Grid item>
           <img
             style={{ width: "150px", height: "150px" }}
-            src={"/predict.png"}
+            src="/predict.png"
+            alt="predict"
           />
         </Grid>
         <Grid container item xs={10}>
@@ -101,7 +110,11 @@ const Dashboard = ({ employees }) => {
       </Grid>
       <Grid container alignItems="center" spacing={6}>
         <Grid item>
-          <img style={{ width: "150px", height: "150px" }} src={"/swear.png"} />
+          <img
+            style={{ width: "150px", height: "150px" }}
+            src="/swear.png"
+            alt="swear"
+          />
         </Grid>
         <Grid container item xs={10}>
           Spot swear words that can affect your business brand potentially.
@@ -143,14 +156,14 @@ const Dashboard = ({ employees }) => {
         {isProcessing ? (
           <Loader />
         ) : (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={uploadAndProcess}
-            >
-              Process
-            </Button>
-          )}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={uploadAndProcess}
+          >
+            Process
+          </Button>
+        )}
       </Grid>
       <div style={{ height: "70px" }} />
       {metadata ? (
@@ -161,9 +174,7 @@ const Dashboard = ({ employees }) => {
           <Grid item>
             Audio length: {metadata["audioLength"].toFixed(2)} seconds.
           </Grid>
-          <Grid item>
-            Sample Rate: {metadata["sampleRate"]} Hertz.
-          </Grid>
+          <Grid item>Sample Rate: {metadata["sampleRate"]} Hertz.</Grid>
         </Grid>
       ) : null}
       <div style={{ height: "70px" }} />
@@ -175,12 +186,12 @@ const Dashboard = ({ employees }) => {
           <div style={{ height: "70px" }}>{transcription}</div>
         </Grid>
       ) : null}
-    </div>
+    </React.Fragment>
   ) : null;
 };
 
-const mapStateToProps = store => ({
-  employees: store.employees.employees
+const mapStateToProps = (store) => ({
+  employees: store.employees.employees,
 });
 
 export default connect(mapStateToProps)(Dashboard);

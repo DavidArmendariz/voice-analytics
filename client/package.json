@@ -1,6 +1,6 @@
 {
   "name": "voice-coast",
-  "version": "1.8.0",
+  "version": "1.0.0",
   "description": "Voice Coast by David Armendariz",
   "private": false,
   "main": "dist/index.js",
@@ -18,8 +18,8 @@
     "moment": "^2.24.0",
     "perfect-scrollbar": "1.4.0",
     "prop-types": "15.7.2",
+    "ramda": "^0.27.0",
     "react": "16.9.0",
-    "react-chartist": "0.13.3",
     "react-d3-cloud": "^0.7.0",
     "react-dom": "16.9.0",
     "react-loader-spinner": "^3.1.14",
@@ -64,8 +64,7 @@
     "eslint-config-prettier": "6.0.0",
     "eslint-plugin-prettier": "3.1.0",
     "gulp": "4.0.2",
-    "gulp-append-prepend": "1.0.8",
-    "prettier": "1.18.2"
+    "gulp-append-prepend": "1.0.8"
   },
   "browserslist": {
     "production": [
