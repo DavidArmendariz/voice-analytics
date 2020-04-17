@@ -14,6 +14,7 @@ import Notifications from "@material-ui/icons/Notifications";
 import Button from "components/CustomButtons/Button.js";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { auth } from "../../firebase/firebase.utils";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
@@ -88,7 +89,7 @@ const AdminNavbarLinks = () => {
                       onClick={handleCloseNotification}
                       className={classes.dropdownItem}
                     >
-                      Hay nuevas notificaciones
+                      <Link to="/admin/notifications">You have new notifications</Link>
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>

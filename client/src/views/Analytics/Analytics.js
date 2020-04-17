@@ -21,6 +21,7 @@ import convertDataForWordCloud from "analytics/convertDataForWordCloud";
 import WordCloud from "components/WordCloud/WordCloud";
 import ExportButton from "components/ExportButton/ExportButton";
 import CustomTable from "components/CustomTable/CustomTable";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const today = new Date();
 today.setHours(23, 59, 59);
@@ -136,17 +137,10 @@ const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
                 </Box>
               </Grid>
               <Grid item>
-                {determinateSentimentIcon(averageSentimentScore)}
+                <Tooltip title="+1 is extremely Positive, 0 is neutral and -1 is extremely negative">
+                  {determinateSentimentIcon(averageSentimentScore)}
+                </Tooltip>
               </Grid>
-            </Grid>
-            <Grid container item justify="center">
-              +1 = Extremely Positive
-            </Grid>
-            <Grid container item justify="center">
-              0 = Neutral
-            </Grid>
-            <Grid container item justify="center">
-              -1 = Extremely Negative
             </Grid>
           </SimpleCard>
         </Grid>

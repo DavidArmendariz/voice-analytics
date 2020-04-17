@@ -7,6 +7,10 @@ import Configuration from "views/Configuration/Configuration";
 import Employees from "./views/Employees/Employees";
 import Analytics from "views/Analytics/Analytics";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro";
+import Prediction from "views/Predictions/Predictions";
+import FunctionsIcon from "@material-ui/icons/Functions";
+import Notifications from "views/Notifications/Notifications";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 
 const dashboardRoutes = [
   {
@@ -42,6 +46,20 @@ const dashboardRoutes = [
     name: "CONFIGURATION",
     icon: Person,
     component: Configuration,
+    layout: "/admin",
+  },
+  {
+    path: "/predictions",
+    name: "PREDICTIONS",
+    icon: FunctionsIcon,
+    component: Prediction,
+    layout: "/admin",
+  },
+  {
+    path: "/notifications",
+    name: "NOTIFICATIONS",
+    icon: NotificationsIcon,
+    component: Notifications,
     layout: "/admin",
   },
 ];

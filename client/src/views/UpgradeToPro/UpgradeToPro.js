@@ -3,6 +3,8 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "assets/jss/material-dashboard-react/views/iconsStyle.js";
 import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 
 const useStyles = makeStyles(styles);
 
@@ -10,17 +12,22 @@ export default function Icons() {
   const classes = useStyles();
   return (
     <div>
-      <Grid container alignItems="center" spacing={6}>
+      <Grid container justify="center" spacing={6}>
         <Grid item>
-          <img
-            style={{ width: "150px", height: "150px" }}
-            src={"/youtube.png"}
+          <Typography variant="h2" gutterBottom>
+            We can analyze every kind of text too!
+          </Typography>
+        </Grid>
+      </Grid>
+      <Grid container justify="center">
+        <form className={classes.root} noValidate autoComplete="off">
+          <TextareaAutosize
+            aria-label="empty textarea"
+            placeholder="Your text goes here"
+            rowsMin={10}
+            style={{ width: "1000px" }}
           />
-        </Grid>
-        <Grid container item xs={10}>
-          Video content creator? Generate subtitles or closed captions for your
-          video project.
-        </Grid>
+        </form>
       </Grid>
     </div>
   );
