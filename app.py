@@ -134,15 +134,5 @@ def delete_employee():
     return "OK", 200
 
 
-@app.route("/get_analytics_data", methods=["POST"])
-@token_required
-def get_analytics_data():
-    data = request.get_json()
-    customerUID = data.get("customerUID")
-    employeesUID = data.get("employeesUID")
-    analytics_data = _get_analytics_data(customerUID, employeesUID)
-    return jsonify(analytics_data), 200
-
-
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get('PORT', 8080)))
