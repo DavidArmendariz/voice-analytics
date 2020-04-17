@@ -2,11 +2,11 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
 import BubbleChart from "@material-ui/icons/BubbleChart";
 import Unarchive from "@material-ui/icons/Unarchive";
-import DashboardPage from "views/Dashboard/Dashboard.js";
-import UserProfile from "views/UserProfile/UserProfile.js";
+import DashboardPage from "views/Dashboard/Dashboard";
+import Configuration from "views/Configuration/Configuration";
 import Employees from "./views/Employees/Employees";
-import Icons from "views/Icons/Icons.js";
-import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
+import Analytics from "views/Analytics/Analytics";
+import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro";
 
 const dashboardRoutes = [
   {
@@ -14,36 +14,36 @@ const dashboardRoutes = [
     name: "OVERVIEW",
     icon: Dashboard,
     component: DashboardPage,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/employees",
     name: "EMPLOYEES",
     icon: "content_paste",
     component: Employees,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/analytics",
     name: "ANALYTICS",
     icon: BubbleChart,
-    component: Icons,
-    layout: "/admin"
+    component: Analytics,
+    layout: "/admin",
   },
   {
     path: "/upgrade-to-pro",
     name: "PRO",
     icon: Unarchive,
     component: UpgradeToPro,
-    layout: "/admin"
+    layout: "/admin",
   },
   {
     path: "/configuration",
     name: "CONFIGURATION",
     icon: Person,
-    component: UserProfile,
-    layout: "/admin"
-  }
+    component: Configuration,
+    layout: "/admin",
+  },
 ];
 
 export default dashboardRoutes;

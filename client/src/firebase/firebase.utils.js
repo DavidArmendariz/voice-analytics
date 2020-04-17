@@ -9,11 +9,15 @@ const firebaseConfig = {
   projectId: "voice-8ddf6",
   storageBucket: "voice-8ddf6.appspot.com",
   messagingSenderId: "604410782430",
-  appId: "1:604410782430:web:2f7d4d8ea0de0f8dcb584f"
+  appId: "1:604410782430:web:2f7d4d8ea0de0f8dcb584f",
 };
 
-export const getDocumentsFromSnapshot = documents => {
-  return documents.docs.map(doc => ({ ...doc.data(), uid: doc.id }));
+export const getDocumentsFromSnapshot = (documents) => {
+  return documents.docs.map((doc) => ({ ...doc.data(), uid: doc.id }));
+};
+
+export const getUID = (documents) => {
+  return documents.docs.map((doc) => doc.id);
 };
 
 firebase.initializeApp(firebaseConfig);

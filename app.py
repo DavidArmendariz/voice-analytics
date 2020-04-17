@@ -14,6 +14,7 @@ from get_translation.get_translation import _get_translation
 from get_sentiment.get_sentiment import _get_sentiment
 from store_employee.store_employee import _store_employee
 from delete_employee.delete_employee import _delete_employee
+from get_analytics_data.get_analytics_data import _get_analytics_data
 
 load_dotenv()
 try:
@@ -131,6 +132,16 @@ def delete_employee():
     reference = data.get("reference")
     _delete_employee(reference)
     return "OK", 200
+
+
+@app.route("/get_analytics_data", methods=["POST"])
+@token_required
+def get_analytics_data():
+    data = request.get_json()
+    customerUID = data.get("customerUID")
+    employeesUID = data.get("employeesUID")
+    analytics_data = _get_analytics_data(customerUID, employeesUID)
+    return jsonify(analytics_data), 200
 
 
 if __name__ == "__main__":
