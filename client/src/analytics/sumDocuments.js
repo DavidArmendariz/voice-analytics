@@ -3,7 +3,7 @@ const sumDocuments = (data, key, calculateAverage = false) => {
     (accumulator, currentValue) => accumulator + currentValue[key],
     0
   );
-  return calculateAverage ? sum / data.length : sum;
+  return calculateAverage ? (sum / data.length).toFixed(2) : sum.toFixed(2);
 };
 
 export default sumDocuments;

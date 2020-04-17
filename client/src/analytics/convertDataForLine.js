@@ -31,7 +31,7 @@ const groupByKey = (group) => {
 
 // Right now, this function only admits applyAverage as an optional argument.
 // It is easy to add another operation (e.g. standard deviation)
-const transformDataForSimpleLineChart = (
+const convertDataForLine = (
   documents,
   xAxis,
   series,
@@ -49,4 +49,4 @@ const transformDataForSimpleLineChart = (
   return applyOperation(groups, "date", series, applyAverage);
 };
 
-export default transformDataForSimpleLineChart;
+export default convertDataForLine;

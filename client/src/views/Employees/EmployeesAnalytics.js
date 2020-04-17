@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import sumDocuments from "analytics/sumDocuments";
 import SimpleCard from "components/SimpleCard/SimpleCard";
 import determineUnitsOfTime from "analytics/determineUnitsOfTime";
-import transformDataForSimpleLineChart from "../../analytics/transformDataForSimpleLineChart";
+import convertDataForLine from "../../analytics/convertDataForLine";
 import SimpleLineChart from "../../components/SimpleLineChart/SimpleLineChart";
 import { Typography } from "@material-ui/core";
 import { UserContext } from "providers/UserProvider";
@@ -18,11 +18,15 @@ import WordCloud from "components/WordCloud/WordCloud";
 import { handleStartDateChange, handleEndDateChange } from "utils/dateHandlers";
 import determinateSentimentIcon from "analytics/determineSentimentIcon";
 import ExportButton from "components/ExportButton/ExportButton";
+import convertDataForBars from "analytics/convertDataForBars";
+import SimpleBarChart from "components/BarChart/BarChart";
+import Box from "@material-ui/core/Box";
 
 const today = new Date();
 today.setHours(23, 59, 59);
 const lastWeek = new Date(today.getTime() - 7 * millisecondsPerDay);
 lastWeek.setHours(0, 0, 0);
+const MAX_ELEMENTS_IN_BARS = 10;
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const { uid: customerUID } = useContext(UserContext);
@@ -40,6 +44,14 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const averageAudioLength =
     data.length &&
     determineUnitsOfTime(sumDocuments(data, "audioLength", true));
+  const averageSentimentScore =
+    data.length &&
+    sumDocuments(
+      data.map((doc) => doc["sentiment"]),
+      "documentSentimentScore",
+      true
+    );
+  console.log(averageSentimentScore);
   const rows =
     data.length &&
     data.map(({ date, transcription, categories, keywords, sentiment }) => ({
@@ -61,13 +73,18 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
       ];
     });
   const audioLengthInTime =
-    data.length &&
-    transformDataForSimpleLineChart(data, "date", ["audioLength"]);
+    data.length && convertDataForLine(data, "date", ["audioLength"]);
   const averageAudioLenghtInTime =
-    data.length &&
-    transformDataForSimpleLineChart(data, "date", ["audioLength"], true);
+    data.length && convertDataForLine(data, "date", ["audioLength"], true);
   const keywords = data.length && convertDataForWordCloud(data, "keywords");
   const categories = data.length && convertDataForWordCloud(data, "categories");
+  const frequencyCategories =
+    data.length && convertDataForBars(data, "categories", MAX_ELEMENTS_IN_BARS);
+  const frequencyKeywords = convertDataForBars(
+    data,
+    "keywords",
+    MAX_ELEMENTS_IN_BARS
+  );
 
   return employee && data.length ? (
     <React.Fragment>
@@ -103,6 +120,33 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
             units=""
           />
         </Grid>
+        <Grid item>
+          <SimpleCard title="Average sentiment score">
+            <Grid container justify="center" spacing={4}>
+              <Grid item>
+                <Box
+                  color="textSecondary"
+                  fontSize={30}
+                  fontWeight="fontWeightRegular"
+                >
+                  {averageSentimentScore}
+                </Box>
+              </Grid>
+              <Grid item>
+                {determinateSentimentIcon(averageSentimentScore)}
+              </Grid>
+            </Grid>
+            <Grid container item justify="center">
+              +1 = Extremely Positive
+            </Grid>
+            <Grid container item justify="center">
+              0 = Neutral
+            </Grid>
+            <Grid container item justify="center">
+              -1 = Extremely Negative
+            </Grid>
+          </SimpleCard>
+        </Grid>
       </Grid>
       <Grid container spacing={6}>
         <Grid item>
@@ -134,13 +178,37 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
       </Grid>
       <Grid container spacing={6}>
         <Grid item>
-          <SimpleCard title={"Top keywords"}>
+          <SimpleCard title="Top keywords">
             <WordCloud words={keywords} />
           </SimpleCard>
         </Grid>
         <Grid item>
-          <SimpleCard title={"Top categories"}>
+          <SimpleCard title="Top categories">
             <WordCloud words={categories} />
+          </SimpleCard>
+        </Grid>
+      </Grid>
+      <Grid container spacing={6}>
+        <Grid item>
+          <SimpleCard title="Frequency of top categories">
+            <SimpleBarChart
+              data={frequencyCategories}
+              options={{
+                color: "#82ca9d",
+                name: "Frequency",
+              }}
+            />
+          </SimpleCard>
+        </Grid>
+        <Grid item>
+          <SimpleCard title="Frequency of top keywords">
+            <SimpleBarChart
+              data={frequencyKeywords}
+              options={{
+                color: "#82ca9d",
+                name: "Frequency",
+              }}
+            />
           </SimpleCard>
         </Grid>
       </Grid>
