@@ -1,12 +1,11 @@
 import axios from "axios";
 
-const getSentiment = (transcription, languageCode) => {
+const getCategories = (translation) => {
   return axios({
-    url: "http://0.0.0.0:8080/get_sentiment",
+    url: "http://0.0.0.0:8080/content_classifier",
     method: "POST",
     data: {
-      transcription,
-      languageCode,
+      translation,
     },
     headers: {
       Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
@@ -14,4 +13,4 @@ const getSentiment = (transcription, languageCode) => {
   });
 };
 
-export default getSentiment;
+export default getCategories;

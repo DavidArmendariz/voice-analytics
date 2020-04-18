@@ -1,6 +1,11 @@
-import axios from "axios";
 import getKeywords from "./getKeywords";
 import getTranscription from "./getTranscription";
+import getSentiment from "./getSentiment";
+import getCategories from "./getCategories";
+import getAudioMetadata from "./getAudioMetadata";
+import uploadBlob from "./uploadBlob";
+import getTranslation from "./getTranslation";
+import storeTranscript from "./storeTranscript";
 
 const processAudio = async (customerUID, employeeUID, languageCode, data) => {
   const currentDate = new Date();
@@ -10,28 +15,12 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
   }-${currentDate.getDate()}/${uid}.mp3`;
   try {
     // Get the audio length and the sample rate
-    const getAudioMetadata = await axios({
-      url: "http://0.0.0.0:8080/get_audio_metadata",
-      method: "POST",
-      data: data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-    });
-    const { audioLength, sampleRate } = getAudioMetadata.data;
+    const requestAudioMetadata = await getAudioMetadata(data);
+    const { audioLength, sampleRate } = requestAudioMetadata.data;
 
     // Upload the audio
     // eslint-disable-next-line
-    let uploadBlob = await axios({
-      url: `http://0.0.0.0:8080/upload_blob?blob=${destinationBlob}`,
-      method: "POST",
-      data: data,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-    });
+    let requestUploadBlob = await uploadBlob(data, destinationBlob);
 
     // Get the transcription from the speech
     const transcriptionRequest = await getTranscription(
@@ -45,74 +34,36 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
     const keywordsRequest = await getKeywords(transcription, languageCode);
     const keywords = keywordsRequest.data;
 
-    // Get the categories from the speech
-    let categories = null;
+    // Translate the transcription to English to get the categories (only supported language)
     let translation = transcription;
     if (!languageCode.startsWith("en")) {
-      const getTranslation = await axios({
-        url: "http://0.0.0.0:8080/get_translation",
-        method: "POST",
-        data: {
-          transcription,
-        },
-        headers: {
-          Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-        },
-      });
-      translation = getTranslation.data;
+      const requestTranslation = await getTranslation(translation);
+      translation = requestTranslation.data;
+      translation = translation.translation;
     }
     // Get the categories
-    const getCategories = await axios({
-      url: "http://0.0.0.0:8080/content_classifier",
-      method: "POST",
-      data: {
-        translation: translation.translation,
-      },
-      headers: {
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-    });
-    categories = getCategories.data;
+    const requestCategories = await getCategories(translation);
+    const categories = requestCategories.data;
 
     // Get the sentiment
-    const getSentiment = await axios({
-      url: "http://0.0.0.0:8080/get_sentiment",
-      method: "POST",
-      data: {
-        transcription,
-        languageCode,
-      },
-      headers: {
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-    });
-    const sentiment = getSentiment.data;
+    const requestSentiment = await getSentiment(transcription, languageCode);
+    const sentiment = requestSentiment.data;
+
     // Store the document with all the data
-    // eslint-disable-next-line
-    let storeTranscript = await axios({
-      url: "http://0.0.0.0:8080/store_data",
-      method: "POST",
-      headers: {
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-      data: {
-        reference: `customers/${customerUID}/employees/${employeeUID}/transcriptions`,
-        transcription,
-        audioLength,
-        sampleRate,
-        keywords,
-        categories,
-        sentiment,
-      },
-    });
-    return {
+    const dataToStore = {
       transcription,
       audioLength,
       sampleRate,
-      categories,
       keywords,
+      categories,
       sentiment,
     };
+    // eslint-disable-next-line
+    let requestStoreTranscript = await storeTranscript(
+      dataToStore,
+      `customers/${customerUID}/employees/${employeeUID}/transcriptions`
+    );
+    return dataToStore;
   } catch (error) {
     console.log(error);
     return null;
