@@ -11,20 +11,24 @@ import ProcessingInfo from "components/ProcessingInfo/ProcessingInfo";
 
 const useStyles = makeStyles(styles);
 
-export default function Icons() {
+const UpgradeToPro = () => {
   const classes = useStyles();
   const [text, setText] = React.useState("Your text goes here");
   const [metadata, setMetadata] = React.useState(null);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const response = await processText(text);
-    setMetadata({ keywords: Object.keys(response).join(", ") });
+    setMetadata({
+      keywords: Object.keys(response.keywords).join(", "),
+      categories: Object.keys(response.categories).join(", "),
+      score: response.documentSentimentScore,
+      magnitude: response.documentSentimentMagnitude,
+    });
   };
   const onChangeHandler = (event) => {
     const { value } = event.currentTarget;
     setText(value);
   };
-  console.log(text);
   return (
     <div>
       <Grid container justify="center" spacing={6}>
@@ -61,7 +65,12 @@ export default function Icons() {
             data={metadata}
             options={{
               title: "This is your result",
-              subtitles: { keywords: "Keywords" },
+              subtitles: {
+                keywords: "Keywords",
+                categories: "Categories",
+                score: "Score",
+                magnitude: "Magnitude",
+              },
               units: {},
             }}
           />
@@ -69,4 +78,6 @@ export default function Icons() {
       )}
     </div>
   );
-}
+};
+
+export default UpgradeToPro;

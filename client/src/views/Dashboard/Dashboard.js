@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { connect } from "react-redux";
 import Options from "../../components/Select/Select";
-import { languages } from "../../constants/Languages";
+import { languages } from "../../constants/languages";
 import arrayToObject from "../../utils/ArrayToObject";
 import processAudio from "../../utils/processAudio";
 import Loader from "react-loader-spinner";

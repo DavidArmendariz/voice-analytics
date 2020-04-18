@@ -98,8 +98,8 @@ def content_classifier():
 def get_translation():
     data = request.get_json()
     text = data.get("transcription")
-    translation = _get_translation(text)
-    return jsonify({"translation": translation})
+    translation, detected_language = _get_translation(text)
+    return jsonify({"translation": translation, "detectedLanguage": detected_language})
 
 
 @app.route("/get_sentiment", methods=["POST"])
