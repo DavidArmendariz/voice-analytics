@@ -12,12 +12,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ExportButton = ({ headers, data }) => {
+const ExportButton = ({ headers, data, filename = "transcriptions" }) => {
   const classes = useStyles();
   const exportedData = [headers, ...data];
   return (
     <div className={classes.root}>
-      <CSVLink data={exportedData} filename={`transcriptions-${moment().format("YYYY-MM-DD")}.csv`}>
+      <CSVLink
+        data={exportedData}
+        filename={`${filename}-${moment().format("YYYY-MM-DD")}.csv`}
+      >
         <Button variant="contained" color="primary">
           Download
         </Button>

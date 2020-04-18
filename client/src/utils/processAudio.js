@@ -1,11 +1,13 @@
 import axios from "axios";
+import getKeywords from "./getKeywords";
+import getTranscription from "./getTranscription";
 
 const processAudio = async (customerUID, employeeUID, languageCode, data) => {
   const currentDate = new Date();
   const uid = Date.now();
   const destinationBlob = `customers/${customerUID}/employees/${employeeUID}/${currentDate.getFullYear()}-${
     currentDate.getMonth() + 1
-    }-${currentDate.getDate()}/${uid}.mp3`;
+  }-${currentDate.getDate()}/${uid}.mp3`;
   try {
     // Get the audio length and the sample rate
     const getAudioMetadata = await axios({
@@ -17,9 +19,9 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
         Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
       },
     });
-    const { audioLength, sampleRate } = getAudioMetadata.data
+    const { audioLength, sampleRate } = getAudioMetadata.data;
 
-    // Upload the audio 
+    // Upload the audio
     // eslint-disable-next-line
     let uploadBlob = await axios({
       url: `http://0.0.0.0:8080/upload_blob?blob=${destinationBlob}`,
@@ -32,29 +34,16 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
     });
 
     // Get the transcription from the speech
-    const getTranscription = await axios({
-      url: "http://0.0.0.0:8080/get_transcription",
-      method: "POST",
-      data: { blob: destinationBlob, languageCode, sampleRate },
-      headers: {
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-    });
-    const { transcription } = getTranscription.data;
+    const transcriptionRequest = await getTranscription(
+      destinationBlob,
+      languageCode,
+      sampleRate
+    );
+    const { transcription } = transcriptionRequest.data;
 
     // Get the keywords from the speech
-    const getKeywords = await axios({
-      url: "http://0.0.0.0:8080/get_keywords",
-      method: "POST",
-      data: {
-        transcription,
-        languageCode,
-      },
-      headers: {
-        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
-      },
-    });
-    const keywords = getKeywords.data;
+    const keywordsRequest = await getKeywords(transcription, languageCode);
+    const keywords = keywordsRequest.data;
 
     // Get the categories from the speech
     let categories = null;
@@ -64,7 +53,7 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
         url: "http://0.0.0.0:8080/get_translation",
         method: "POST",
         data: {
-          transcription
+          transcription,
         },
         headers: {
           Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
@@ -77,7 +66,7 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
       url: "http://0.0.0.0:8080/content_classifier",
       method: "POST",
       data: {
-        translation: translation.translation
+        translation: translation.translation,
       },
       headers: {
         Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
@@ -113,10 +102,17 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
         sampleRate,
         keywords,
         categories,
-        sentiment
+        sentiment,
       },
     });
-    return { transcription, audioLength, sampleRate, categories, keywords, sentiment };
+    return {
+      transcription,
+      audioLength,
+      sampleRate,
+      categories,
+      keywords,
+      sentiment,
+    };
   } catch (error) {
     console.log(error);
     return null;

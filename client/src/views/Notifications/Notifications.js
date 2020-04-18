@@ -1,45 +1,34 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import TableContainer from "@material-ui/core/TableContainer";
+import Grid from "@material-ui/core/Grid";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
 import { selectNotificationsAsTable } from "../../redux/notifications/notifications.selectors";
+import CustomTable from "components/CustomTable/CustomTable";
+import ExportButton from "components/ExportButton/ExportButton";
+import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
-
-const NotificationsList = ({ notifications, match }) => {
-  const classes = useStyles();
-
+const NotificationsList = ({ notifications }) => {
   return (
     notifications && (
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Date</TableCell>
-              <TableCell>Notification</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {notifications.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.date.toLocaleString()}</TableCell>
-                <TableCell>{row.message}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={5}>
+        <Grid container item justify="center">
+          <Typography variant="h4" gutterBottom>
+            Filter your notifications by date
+          </Typography>
+        </Grid>
+        <Grid container item justify="flex-end">
+          <ExportButton
+            headers={["Date", "Message"]}
+            data={notifications.map((notification) =>
+              Object.values(notification)
+            )}
+            filename="notifications"
+          />
+        </Grid>
+        <Grid container item justify="center">
+          <CustomTable headers={["Date", "Message"]} rows={notifications} />
+        </Grid>
+      </Grid>
     )
   );
 };

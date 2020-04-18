@@ -41,13 +41,15 @@ export default function Icons() {
           autoComplete="off"
           onSubmit={handleSubmit}
         >
-          <TextareaAutosize
-            aria-label="empty textarea"
-            placeholder={text}
-            rowsMin={10}
-            style={{ width: "900px" }}
-            onChange={onChangeHandler}
-          />
+          <Grid item>
+            <TextareaAutosize
+              aria-label="empty textarea"
+              placeholder={text}
+              rowsMin={10}
+              style={{ width: "900px" }}
+              onChange={onChangeHandler}
+            />
+          </Grid>
           <Button type="submit" fullWidth variant="contained" color="primary">
             Analyze now
           </Button>
