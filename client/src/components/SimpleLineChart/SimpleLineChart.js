@@ -11,7 +11,7 @@ const SimpleLineChart = ({ data, options }) => {
         top: 5,
         right: 30,
         left: 20,
-        bottom: 5
+        bottom: 5,
       }}
     >
       <XAxis dataKey={options.horizontalAxis} />
@@ -19,7 +19,14 @@ const SimpleLineChart = ({ data, options }) => {
       <Tooltip />
       <Legend />
       {options.series.map((dataKey, index) => (
-        <Line key={index} type="monotone" dataKey={dataKey} name={options.seriesNames[dataKey]} stroke={options.colors[dataKey]} />
+        <Line
+          key={index}
+          type="monotone"
+          dataKey={dataKey}
+          name={options.seriesNames[dataKey]}
+          stroke={options.colors[dataKey]}
+          fill="black"
+        />
       ))}
     </LineChart>
   );

@@ -9,6 +9,7 @@ import arrayToObject from "../../utils/ArrayToObject";
 import processAudio from "../../utils/processAudio";
 import Loader from "react-loader-spinner";
 import { UserContext } from "../../providers/UserProvider";
+import ProcessingInfo from "components/ProcessingInfo/ProcessingInfo";
 
 const Dashboard = ({ employees }) => {
   const [file, setFile] = React.useState(null);
@@ -30,10 +31,13 @@ const Dashboard = ({ employees }) => {
     processAudio(customerUID, employeeUID, languageCode, formData)
       .then((response) => {
         if (response) {
-          setTranscription(response["transcription"]);
+          setTranscription(response.transcription);
           setMetadata({
-            audioLength: response["audioLength"],
-            sampleRate: response["sampleRate"],
+            audioLength: response.audioLength,
+            sampleRate: response.sampleRate,
+            categories: Object.keys(response.categories).join(", "),
+            keywords: Object.keys(response.keywords).join(", "),
+            sentiment: response.sentiment.documentSentimentScore,
           });
         } else {
           setTranscription("Oops, there was an error, try again later!");
@@ -167,13 +171,22 @@ const Dashboard = ({ employees }) => {
       <div style={{ height: "70px" }} />
       {metadata ? (
         <Grid container justify="center">
-          <Grid container justify="center">
-            <Typography variant="h2">Metadata</Typography>
-          </Grid>
-          <Grid item>
-            Audio length: {metadata["audioLength"].toFixed(2)} seconds.
-          </Grid>
-          <Grid item>Sample Rate: {metadata["sampleRate"]} Hertz.</Grid>
+          <ProcessingInfo
+            data={metadata}
+            options={{
+              title: "Interesting facts about your audio",
+              subtitles: {
+                audioLength: "Audio length",
+                sampleRate: "Sample rate",
+                categories: "Categories",
+                keywords: "Keywords",
+              },
+              units: {
+                audioLength: "seconds",
+                sampleRate: "hertz",
+              },
+            }}
+          />
         </Grid>
       ) : null}
       <div style={{ height: "70px" }} />

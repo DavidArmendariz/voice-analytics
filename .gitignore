@@ -30,3 +30,6 @@ __pycache__/
 
 # nltk
 nltk_data/
+
+# audios
+audios/

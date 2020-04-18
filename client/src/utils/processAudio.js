@@ -58,9 +58,10 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
 
     // Get the categories from the speech
     let categories = null;
-    if (languageCode.startsWith("en")) {
-      const getCategories = await axios({
-        url: "http://0.0.0.0:8080/content_classifier",
+    let translation = transcription;
+    if (!languageCode.startsWith("en")) {
+      const getTranslation = await axios({
+        url: "http://0.0.0.0:8080/get_translation",
         method: "POST",
         data: {
           transcription
@@ -69,9 +70,22 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
           Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
         },
       });
-      categories = getCategories.data;
+      translation = getTranslation.data;
     }
+    // Get the categories
+    const getCategories = await axios({
+      url: "http://0.0.0.0:8080/content_classifier",
+      method: "POST",
+      data: {
+        translation: translation.translation
+      },
+      headers: {
+        Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
+      },
+    });
+    categories = getCategories.data;
 
+    // Get the sentiment
     const getSentiment = await axios({
       url: "http://0.0.0.0:8080/get_sentiment",
       method: "POST",
@@ -102,7 +116,7 @@ const processAudio = async (customerUID, employeeUID, languageCode, data) => {
         sentiment
       },
     });
-    return { transcription, audioLength, sampleRate, categories };
+    return { transcription, audioLength, sampleRate, categories, keywords, sentiment };
   } catch (error) {
     console.log(error);
     return null;

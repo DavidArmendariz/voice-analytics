@@ -14,7 +14,6 @@ from get_translation.get_translation import _get_translation
 from get_sentiment.get_sentiment import _get_sentiment
 from store_employee.store_employee import _store_employee
 from delete_employee.delete_employee import _delete_employee
-from get_analytics_data.get_analytics_data import _get_analytics_data
 
 load_dotenv()
 try:
@@ -86,7 +85,7 @@ def store_data():
 @token_required
 def content_classifier():
     data = request.get_json()
-    text = data.get("transcription")
+    text = data.get("translation")
     language_code = data.get("languageCode")
     if language_code:
         language_code = language_code.split("-")[0]
