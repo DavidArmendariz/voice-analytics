@@ -15,14 +15,20 @@ import Button from "components/CustomButtons/Button.js";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { auth } from "../../firebase/firebase.utils";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { fetchNotificationsStart } from "../../redux/notifications/notifications.actions";
 
 const useStyles = makeStyles(styles);
 
-const AdminNavbarLinks = () => {
+const AdminNavbarLinks = (props) => {
+  const { fetchNotificationsStart, notifications } = props;
+  React.useEffect(() => {
+    fetchNotificationsStart();
+  }, [fetchNotificationsStart]);
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
-  const handleClickNotification = event => {
+  const handleClickNotification = (event) => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
     } else {
@@ -32,7 +38,7 @@ const AdminNavbarLinks = () => {
   const handleCloseNotification = () => {
     setOpenNotification(null);
   };
-  const handleClickProfile = event => {
+  const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(null);
     } else {
@@ -79,18 +85,25 @@ const AdminNavbarLinks = () => {
               id="notification-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseNotification}>
                   <MenuList role="menu">
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      <Link to="/admin/notifications">You have new notifications</Link>
-                    </MenuItem>
+                    {notifications.map((notification, index) => {
+                      return (
+                        <MenuItem
+                          key={index}
+                          onClick={handleCloseNotification}
+                          className={classes.dropdownItem}
+                        >
+                          <Link to="/admin/notifications">
+                            {notification.message}
+                          </Link>
+                        </MenuItem>
+                      );
+                    })}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -130,7 +143,7 @@ const AdminNavbarLinks = () => {
               id="profile-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>
@@ -160,4 +173,13 @@ const AdminNavbarLinks = () => {
   );
 };
 
-export default AdminNavbarLinks;
+const mapStateToProps = (store) => ({
+  notifications: store.notifications.notifications,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchNotificationsStart: (customerUID) =>
+    dispatch(fetchNotificationsStart(customerUID)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminNavbarLinks);

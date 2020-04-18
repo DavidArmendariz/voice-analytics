@@ -248,7 +248,7 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
           }
         />
       </Grid>
-      No data available for this employee.
+      No data available.
     </div>
   );
 };
