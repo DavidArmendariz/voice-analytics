@@ -10,6 +10,7 @@ const ProcessingInfo = ({ data, options }) => {
         <Typography variant="h3">{options.title}</Typography>
       </Grid>
       {Object.keys(options.subtitles).map((subtitle, index) => {
+        console.log(subtitle);
         return (
           <Grid key={index} container item justify="center">
             <Box fontWeight="fontWeightBold">

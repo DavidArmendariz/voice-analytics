@@ -99,7 +99,7 @@ const UserProfile = ({ employees }) => {
         </Grid>
       </Grid>
       <Grid container justify="center">
-        <form className={classes.root} noValidate autoComplete="off">
+        <form className={classes.root} noValidate autoComplete="off" onSubmit={onCreateClick}>
           <TextField
             required
             name="name"
@@ -114,7 +114,6 @@ const UserProfile = ({ employees }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(event) => onCreateClick(event)}
           >
             Create
           </Button>
@@ -126,7 +125,7 @@ const UserProfile = ({ employees }) => {
         </Typography>
       </Grid>
       <Grid container justify="center">
-        <form className={classes.root} noValidate autoComplete="off">
+        <form className={classes.root} noValidate autoComplete="off" onSubmit={onDeleteClick}>
           <Options
             title={"Select employee"}
             options={arrayToObject(employees, "name", "uid")}
@@ -139,7 +138,6 @@ const UserProfile = ({ employees }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(event) => onDeleteClick(event)}
           >
             Delete
           </Button>
