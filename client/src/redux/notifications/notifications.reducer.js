@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   notifications: [],
   notificationsByDate: [],
   isFetching: false,
+  isFetchingByDate: false,
   errorMessage: undefined,
 };
 
@@ -30,18 +31,18 @@ const notificationsReducer = (state = INITIAL_STATE, action) => {
     case NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_DATE_START:
       return {
         ...state,
-        isFetching: true,
+        isFetchingByDate: true,
       };
     case NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_DATE_SUCCESS:
       return {
         ...state,
-        isFetching: false,
+        isFetchingByDate: false,
         notificationsByDate: action.notifications,
       };
     case NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_DATE_FAILURE:
       return {
         ...state,
-        isFetching: false,
+        isFetchingByDate: false,
         errorMessage: action.errorMessage,
       };
     default:

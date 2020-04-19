@@ -11,6 +11,7 @@ import ProcessingInfo from "components/ProcessingInfo/ProcessingInfo";
 import CustomTable from "components/CustomTable/CustomTable";
 import { connect } from "react-redux";
 import { openSnackbar } from "../../redux/snackbarstatus/snackbarstatus.actions";
+import Loader from "react-loader-spinner";
 
 const useStyles = makeStyles(styles);
 
@@ -18,8 +19,10 @@ const UpgradeToPro = ({ openSnackbar }) => {
   const classes = useStyles();
   const [text, setText] = React.useState("Your text goes here");
   const [metadata, setMetadata] = React.useState(null);
+  const [isProcessing, setIsProcessing] = React.useState(false);
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsProcessing(true);
     try {
       const response = await processText(text);
       setMetadata({
@@ -32,6 +35,8 @@ const UpgradeToPro = ({ openSnackbar }) => {
     } catch (error) {
       console.log(error);
       openSnackbar("Something went wrong", "error");
+    } finally {
+      setIsProcessing(false);
     }
   };
   const onChangeHandler = (event) => {
@@ -68,6 +73,13 @@ const UpgradeToPro = ({ openSnackbar }) => {
           </Button>
         </form>
       </Grid>
+      {isProcessing && (
+        <div style={{ height: "500px" }}>
+          <Grid container item justify="center">
+            <Loader type="Oval" color="#6a0dad" />
+          </Grid>
+        </div>
+      )}
       {metadata && (
         <Grid container justify="center">
           <ProcessingInfo

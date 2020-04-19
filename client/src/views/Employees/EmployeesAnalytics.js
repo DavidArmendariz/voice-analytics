@@ -18,8 +18,14 @@ import Box from "@material-ui/core/Box";
 import Tooltip from "@material-ui/core/Tooltip";
 import { today, lastWeek } from "constants/dates.constants";
 import processAnalytics from "analytics/processAnalytics";
+import Loader from "react-loader-spinner";
 
-const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
+const EmployeesAnalytics = ({
+  employee,
+  fetchTranscriptionsStart,
+  data,
+  isFetching,
+}) => {
   const [endDate, setEndDate] = React.useState(today);
   const [startDate, setStartDate] = React.useState(lastWeek);
   React.useEffect(() => {
@@ -43,7 +49,11 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
     frequencyKeywords,
   } = processAnalytics(data);
 
-  return employee && data.length ? (
+  return isFetching ? (
+    <Grid container item justify="center">
+      <Loader type="Oval" color="#6a0dad" />
+    </Grid>
+  ) : data.length ? (
     <React.Fragment>
       <Grid container item justify="center" style={{ height: "70px" }}>
         <Typography variant="h4" gutterBottom>
@@ -210,9 +220,10 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   );
 };
 
-const mapStateToProps = (state, ownProps) => ({
-  employee: selecEmployeeById(ownProps.match.params.employeeUid)(state),
-  data: selectTranscriptions(state),
+const mapStateToProps = (store, ownProps) => ({
+  employee: selecEmployeeById(ownProps.match.params.employeeUid)(store),
+  data: selectTranscriptions(store),
+  isFetching: store.transcriptions.isFetching,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -18,11 +18,15 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { today, lastWeek } from "constants/dates.constants";
 import processAnalytics from "analytics/processAnalytics";
 import { selectAnalyticsData } from "../../redux/analyticsdata/analyticsdata.selectors";
+import Loader from "react-loader-spinner";
 
-const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
+const Analytics = ({
+  analyticsData: data,
+  fetchAnalyticsDataStart,
+  isFetching,
+}) => {
   const [endDate, setEndDate] = React.useState(today);
   const [startDate, setStartDate] = React.useState(lastWeek);
-
   React.useEffect(() => {
     fetchAnalyticsDataStart(startDate, endDate);
   }, [startDate, endDate, fetchAnalyticsDataStart]);
@@ -42,7 +46,11 @@ const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
     frequencyKeywords,
   } = processAnalytics(data);
 
-  return data.length ? (
+  return isFetching ? (
+    <Grid container item justify="center">
+      <Loader type="Oval" color="#6a0dad" />
+    </Grid>
+  ) : data.length ? (
     <React.Fragment>
       <Grid container justify="center">
         <Typography variant="h2">Analytics</Typography>
@@ -193,11 +201,28 @@ const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
         rows={rows}
       />
     </React.Fragment>
-  ) : null;
+  ) : (
+    <div>
+      <Grid container item justify="center" style={{ height: "70px" }}>
+        <StartEndDatePicker
+          startDate={startDate}
+          endDate={endDate}
+          handleStartDate={(date) =>
+            handleStartDateChange(date, endDate, setStartDate)
+          }
+          handleEndDate={(date) =>
+            handleEndDateChange(date, startDate, setEndDate)
+          }
+        />
+      </Grid>
+      No data available.
+    </div>
+  );
 };
 
 const mapStateToProps = (store) => ({
   analyticsData: selectAnalyticsData(store),
+  isFetching: store.analytics.isFetching,
 });
 
 const mapDispatchToProps = (dispatch) => ({

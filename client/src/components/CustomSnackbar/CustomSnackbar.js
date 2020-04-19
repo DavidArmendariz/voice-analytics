@@ -20,7 +20,6 @@ const Alert = (props) => {
 
 const CustomizedSnackbars = ({ message, open, closeSnackbar, severity }) => {
   const classes = useStyles();
-  console.log(message, severity); 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
