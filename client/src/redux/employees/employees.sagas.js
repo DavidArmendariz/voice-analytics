@@ -2,18 +2,20 @@ import { takeLatest, call, put, all } from "redux-saga/effects";
 import EmployeesActionTypes from "./employees.types";
 import {
   firestore,
-  getDocumentsFromSnapshot
+  getDocumentsFromSnapshot,
+  auth
 } from "../../firebase/firebase.utils";
 import {
   fetchEmployeesSuccess,
   fetchEmployeesFailure
 } from "./employees.actions";
 
-export function* fetchEmployees({ uid }) {
+export function* fetchEmployees() {
   try {
+    const customerUID = yield auth.currentUser.uid;
     const employeesReference = firestore
       .collection("customers")
-      .doc(uid)
+      .doc(customerUID)
       .collection("employees");
     const snapshot = yield employeesReference.get();
     const employees = yield call(getDocumentsFromSnapshot, snapshot);

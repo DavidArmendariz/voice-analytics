@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -9,7 +9,6 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import routes from "routes.js";
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
-import { UserContext } from "../providers/UserProvider";
 import { connect } from "react-redux";
 import { fetchEmployeesStart } from "../redux/employees/employees.actions";
 
@@ -41,8 +40,6 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
   const [image] = React.useState(bgImage);
   const [color] = React.useState("blue");
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const user = useContext(UserContext);
-  const { uid } = user;
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -52,11 +49,11 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
       setMobileOpen(false);
     }
   };
-  useEffect(() => {
+  React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
-        suppressScrollY: false
+        suppressScrollY: false,
       });
       document.body.style.overflow = "hidden";
     }
@@ -69,9 +66,9 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
     };
   }, [mainPanel]);
 
-  useEffect(() => {
-    fetchEmployeesStart(uid);
-  }, [fetchEmployeesStart, uid]);
+  React.useEffect(() => {
+    fetchEmployeesStart();
+  }, [fetchEmployeesStart]);
 
   return (
     <div className={classes.wrapper}>
@@ -99,11 +96,8 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  fetchEmployeesStart: (uid) => dispatch(fetchEmployeesStart(uid))
+const mapDispatchToProps = (dispatch) => ({
+  fetchEmployeesStart: (uid) => dispatch(fetchEmployeesStart(uid)),
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Admin);
+export default connect(null, mapDispatchToProps)(Admin);
