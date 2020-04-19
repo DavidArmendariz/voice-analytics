@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { selecEmployeeById } from "../../redux/employees/employees.selectors";
 import { fetchTranscriptionsStart } from "../../redux/transcriptions/transcriptions.actions";
@@ -8,8 +8,7 @@ import SimpleCard from "components/SimpleCard/SimpleCard";
 import determineUnitsOfTime from "analytics/determineUnitsOfTime";
 import convertDataForLine from "../../analytics/convertDataForLine";
 import SimpleLineChart from "../../components/SimpleLineChart/SimpleLineChart";
-import { Typography } from "@material-ui/core";
-import { UserContext } from "providers/UserProvider";
+import Typography from "@material-ui/core/Typography";
 import CustomTable from "components/CustomTable/CustomTable";
 import StartEndDatePicker from "components/StartEndDatePicker/StartEndDatePicker";
 import convertDataForWordCloud from "analytics/convertDataForWordCloud";
@@ -26,14 +25,13 @@ import { today, lastWeek } from "constants/dates.constants";
 const MAX_ELEMENTS_IN_BARS = 10;
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
-  const { uid: customerUID } = useContext(UserContext);
-  const [endDate, setEndDate] = useState(today);
-  const [startDate, setStartDate] = useState(lastWeek);
-  useEffect(() => {
-    if (customerUID && employee) {
-      fetchTranscriptionsStart(customerUID, employee.uid, startDate, endDate);
+  const [endDate, setEndDate] = React.useState(today);
+  const [startDate, setStartDate] = React.useState(lastWeek);
+  React.useEffect(() => {
+    if (employee) {
+      fetchTranscriptionsStart(employee.uid, startDate, endDate);
     }
-  }, [employee, customerUID, startDate, endDate, fetchTranscriptionsStart]);
+  }, [employee, startDate, endDate, fetchTranscriptionsStart]);
 
   // Data for our graphs and tables
   const audioLength =
@@ -254,10 +252,8 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchTranscriptionsStart: (customerUID, employeeUID, startDate, endDate) =>
-    dispatch(
-      fetchTranscriptionsStart(customerUID, employeeUID, startDate, endDate)
-    ),
+  fetchTranscriptionsStart: (employeeUID, startDate, endDate) =>
+    dispatch(fetchTranscriptionsStart(employeeUID, startDate, endDate)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EmployeesAnalytics);

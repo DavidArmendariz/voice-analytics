@@ -97,7 +97,7 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchEmployeesStart: (uid) => dispatch(fetchEmployeesStart(uid)),
+  fetchEmployeesStart: () => dispatch(fetchEmployeesStart()),
 });
 
 export default connect(null, mapDispatchToProps)(Admin);

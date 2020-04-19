@@ -6,16 +6,17 @@ import {
 } from "./transcriptions.actions";
 import {
   firestore,
-  getDocumentsFromSnapshot
+  getDocumentsFromSnapshot,
+  auth
 } from "../../firebase/firebase.utils";
 
 export function* fetchTranscriptions({
-  customerUID,
   employeeUID,
   startDate,
   endDate
 }) {
   try {
+    const customerUID = yield auth.currentUser.uid;
     const employeeReference = firestore
       .collection("customers")
       .doc(customerUID)
