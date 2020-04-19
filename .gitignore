@@ -33,3 +33,9 @@ nltk_data/
 
 # audios
 audios/
+
+# sample files
+sample_files/
+
+# jupyter notebooks
+.ipynb_checkpoints/
