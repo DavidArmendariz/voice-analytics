@@ -85,7 +85,6 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
     "keywords",
     MAX_ELEMENTS_IN_BARS
   );
-
   return employee && data.length ? (
     <React.Fragment>
       <Grid container item justify="center" style={{ height: "70px" }}>

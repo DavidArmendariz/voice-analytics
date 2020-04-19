@@ -20,7 +20,6 @@ const useStyles = makeStyles({
 
 const EmployeesList = ({ employees, match }) => {
   const classes = useStyles();
-
   return (
     employees && (
       <TableContainer component={Paper}>

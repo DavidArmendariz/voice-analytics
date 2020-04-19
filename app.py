@@ -14,6 +14,7 @@ from get_translation.get_translation import _get_translation
 from get_sentiment.get_sentiment import _get_sentiment
 from store_employee.store_employee import _store_employee
 from delete_employee.delete_employee import _delete_employee
+from get_entity_sentiment.get_entity_sentiment import _get_entity_sentiment
 
 load_dotenv()
 try:
@@ -131,6 +132,16 @@ def delete_employee():
     reference = data.get("reference")
     _delete_employee(reference)
     return "OK", 200
+
+
+@app.route("/get_entity_sentiment", methods=["POST"])
+@token_required
+def get_entity_sentiment():
+    data = request.get_json()
+    text = data.get("text")
+    language = data.get("languageCode")
+    result = _get_entity_sentiment(text, language)
+    return jsonify(result)
 
 
 if __name__ == "__main__":

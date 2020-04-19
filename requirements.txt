@@ -10,4 +10,3 @@ multi-rake
 python-dotenv
 flask-cors
 googletrans
-langdetect

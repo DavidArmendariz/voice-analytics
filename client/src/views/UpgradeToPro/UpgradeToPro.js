@@ -8,6 +8,7 @@ import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Button from "@material-ui/core/Button";
 import processText from "utils/processText";
 import ProcessingInfo from "components/ProcessingInfo/ProcessingInfo";
+import CustomTable from "components/CustomTable/CustomTable";
 
 const useStyles = makeStyles(styles);
 
@@ -23,12 +24,14 @@ const UpgradeToPro = () => {
       categories: Object.keys(response.categories).join(", "),
       score: response.documentSentimentScore,
       magnitude: response.documentSentimentMagnitude,
+      entities: response.entities,
     });
   };
   const onChangeHandler = (event) => {
     const { value } = event.currentTarget;
     setText(value);
   };
+  console.log(metadata);
   return (
     <div>
       <Grid container justify="center" spacing={6}>
@@ -76,6 +79,18 @@ const UpgradeToPro = () => {
           />
         </Grid>
       )}
+      {metadata ? (
+        <CustomTable
+          headers={[
+            "Entity type",
+            "Entity",
+            "Relevance",
+            "Magnitude",
+            "Sentiment Score",
+          ]}
+          rows={metadata.entities}
+        />
+      ) : null}
     </div>
   );
 };

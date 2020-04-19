@@ -4,9 +4,11 @@ import {
   keywordsCodes,
   contentClasifficationCodes,
   sentimentAnalysisCodes,
+  entitySentimentAnalysisCodes,
 } from "../constants/languages";
 import getCategories from "./getCategories";
 import getSentiment from "./getSentiment";
+import getEntities from "./getEntities";
 
 const english = "en";
 
@@ -43,6 +45,14 @@ const processText = async (text) => {
       documentSentimentScore,
       documentSentimentMagnitude,
     } = requestSentiment.data;
+    // Entities
+    let requestEntities;
+    if (!entitySentimentAnalysisCodes.includes(detectedLanguage)) {
+      requestEntities = await getEntities(translation, english);
+    } else {
+      requestEntities = await getEntities(text, detectedLanguage);
+    }
+    const entities = requestEntities.data;
 
     // Data to be returned
     const data = {
@@ -50,6 +60,7 @@ const processText = async (text) => {
       categories,
       documentSentimentScore,
       documentSentimentMagnitude,
+      entities,
     };
     return data;
   } catch (error) {
