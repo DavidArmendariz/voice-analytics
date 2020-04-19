@@ -5,7 +5,7 @@ import {
   contentClasifficationCodes,
   sentimentAnalysisCodes,
   entitySentimentAnalysisCodes,
-} from "../constants/languages";
+} from "../constants/languages.constants";
 import getCategories from "./getCategories";
 import getSentiment from "./getSentiment";
 import getEntities from "./getEntities";

@@ -17,6 +17,7 @@ import CustomTable from "components/CustomTable/CustomTable";
 import Tooltip from "@material-ui/core/Tooltip";
 import { today, lastWeek } from "constants/dates.constants";
 import processAnalytics from "analytics/processAnalytics";
+import { selectAnalyticsData } from "../../redux/analyticsdata/analyticsdata.selectors";
 
 const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
   const [endDate, setEndDate] = React.useState(today);
@@ -196,7 +197,7 @@ const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
 };
 
 const mapStateToProps = (store) => ({
-  analyticsData: store.analytics.data,
+  analyticsData: selectAnalyticsData(store),
 });
 
 const mapDispatchToProps = (dispatch) => ({

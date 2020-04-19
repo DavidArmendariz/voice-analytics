@@ -31,7 +31,6 @@ const UpgradeToPro = () => {
     const { value } = event.currentTarget;
     setText(value);
   };
-  console.log(metadata);
   return (
     <div>
       <Grid container justify="center" spacing={6}>

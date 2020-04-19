@@ -10,7 +10,7 @@ import { UserContext } from "../../providers/UserProvider";
 import axios from "axios";
 import { connect } from "react-redux";
 import Options from "../../components/Select/Select";
-import arrayToObject from "utils/ArrayToObject";
+import arrayToObject from "utils/arrayToObject";
 
 const useStyles = makeStyles((theme) => ({
   root: {
