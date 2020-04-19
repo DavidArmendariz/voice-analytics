@@ -1,8 +1,7 @@
 import AnalyticsDataActionTypes from "./analyticsdata.types";
 
-export const fetchAnalyticsDataStart = (customerUID, startDate, endDate) => ({
+export const fetchAnalyticsDataStart = (startDate, endDate) => ({
   type: AnalyticsDataActionTypes.FETCH_ANALYTICSDATA_START,
-  customerUID,
   startDate,
   endDate,
 });

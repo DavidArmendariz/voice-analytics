@@ -4,26 +4,20 @@ import { selecEmployeeById } from "../../redux/employees/employees.selectors";
 import { selectTranscriptions } from "../../redux/transcriptions/transcriptions.selectors";
 import { fetchTranscriptionsStart } from "../../redux/transcriptions/transcriptions.actions";
 import Grid from "@material-ui/core/Grid";
-import sumDocuments from "analytics/sumDocuments";
 import SimpleCard from "components/SimpleCard/SimpleCard";
-import determineUnitsOfTime from "analytics/determineUnitsOfTime";
-import convertDataForLine from "../../analytics/convertDataForLine";
 import SimpleLineChart from "../../components/SimpleLineChart/SimpleLineChart";
 import Typography from "@material-ui/core/Typography";
 import CustomTable from "components/CustomTable/CustomTable";
 import StartEndDatePicker from "components/StartEndDatePicker/StartEndDatePicker";
-import convertDataForWordCloud from "analytics/convertDataForWordCloud";
 import WordCloud from "components/WordCloud/WordCloud";
 import { handleStartDateChange, handleEndDateChange } from "utils/dateHandlers";
 import determinateSentimentIcon from "analytics/determineSentimentIcon";
 import ExportButton from "components/ExportButton/ExportButton";
-import convertDataForBars from "analytics/convertDataForBars";
 import SimpleBarChart from "components/BarChart/BarChart";
 import Box from "@material-ui/core/Box";
 import Tooltip from "@material-ui/core/Tooltip";
 import { today, lastWeek } from "constants/dates.constants";
-
-const MAX_ELEMENTS_IN_BARS = 10;
+import processAnalytics from "analytics/processAnalytics";
 
 const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   const [endDate, setEndDate] = React.useState(today);
@@ -35,51 +29,20 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
   }, [employee, startDate, endDate, fetchTranscriptionsStart]);
 
   // Data for our graphs and tables
-  const audioLength =
-    data.length && determineUnitsOfTime(sumDocuments(data, "audioLength"));
-  const averageAudioLength =
-    data.length &&
-    determineUnitsOfTime(sumDocuments(data, "audioLength", true));
-  const averageSentimentScore =
-    data.length &&
-    sumDocuments(
-      data.map((doc) => doc["sentiment"]),
-      "documentSentimentScore",
-      true
-    );
-  const rows =
-    data.length &&
-    data.map(({ date, transcription, categories, keywords, sentiment }) => ({
-      date: date.toDate().toLocaleDateString(),
-      transcription,
-      categories: Object.keys(categories).join(", "),
-      keywords: Object.keys(keywords).join(", "),
-      sentiment: determinateSentimentIcon(sentiment.documentSentimentScore),
-    }));
-  const exportedRows =
-    data.length &&
-    data.map(({ date, transcription, categories, keywords, sentiment }) => {
-      return [
-        date.toDate().toLocaleDateString(),
-        transcription,
-        Object.keys(categories).join(", "),
-        Object.keys(keywords).join(", "),
-        sentiment.documentSentimentScore,
-      ];
-    });
-  const audioLengthInTime =
-    data.length && convertDataForLine(data, "date", ["audioLength"]);
-  const averageAudioLenghtInTime =
-    data.length && convertDataForLine(data, "date", ["audioLength"], true);
-  const keywords = data.length && convertDataForWordCloud(data, "keywords");
-  const categories = data.length && convertDataForWordCloud(data, "categories");
-  const frequencyCategories =
-    data.length && convertDataForBars(data, "categories", MAX_ELEMENTS_IN_BARS);
-  const frequencyKeywords = convertDataForBars(
-    data,
-    "keywords",
-    MAX_ELEMENTS_IN_BARS
-  );
+  const {
+    audioLength,
+    averageAudioLength,
+    averageSentimentScore,
+    rows,
+    exportedRows,
+    audioLengthInTime,
+    averageAudioLenghtInTime,
+    keywords,
+    categories,
+    frequencyCategories,
+    frequencyKeywords,
+  } = processAnalytics(data);
+
   return employee && data.length ? (
     <React.Fragment>
       <Grid container item justify="center" style={{ height: "70px" }}>

@@ -4,10 +4,11 @@ import {
   fetchAnalyticsDataSuccess,
   fetchAnalyticsDataFailure,
 } from "./analyticsdata.actions";
-import { firestore, getUID } from "../../firebase/firebase.utils";
+import { firestore, getUID, auth } from "../../firebase/firebase.utils";
 
-export function* fetchAnalyticsData({ customerUID, startDate, endDate }) {
+export function* fetchAnalyticsData({ startDate, endDate }) {
   try {
+    const customerUID = yield auth.currentUser.uid;
     const employeesReference = firestore
       .collection("customers")
       .doc(customerUID)

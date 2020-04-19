@@ -3,85 +3,43 @@ import React from "react";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import { UserContext } from "providers/UserProvider";
 import { fetchAnalyticsDataStart } from "redux/analyticsdata/analyticsdata.actions";
 import { handleStartDateChange, handleEndDateChange } from "utils/dateHandlers";
 import StartEndDatePicker from "components/StartEndDatePicker/StartEndDatePicker";
-import convertDataForBars from "analytics/convertDataForBars";
 import SimpleBarChart from "components/BarChart/BarChart";
 import Box from "@material-ui/core/Box";
-import sumDocuments from "analytics/sumDocuments";
 import SimpleCard from "components/SimpleCard/SimpleCard";
-import determineUnitsOfTime from "analytics/determineUnitsOfTime";
-import convertDataForLine from "../../analytics/convertDataForLine";
 import SimpleLineChart from "../../components/SimpleLineChart/SimpleLineChart";
 import determinateSentimentIcon from "analytics/determineSentimentIcon";
-import convertDataForWordCloud from "analytics/convertDataForWordCloud";
 import WordCloud from "components/WordCloud/WordCloud";
 import ExportButton from "components/ExportButton/ExportButton";
 import CustomTable from "components/CustomTable/CustomTable";
 import Tooltip from "@material-ui/core/Tooltip";
 import { today, lastWeek } from "constants/dates.constants";
-
-const MAX_ELEMENTS_IN_BARS = 10;
+import processAnalytics from "analytics/processAnalytics";
 
 const Analytics = ({ analyticsData: data, fetchAnalyticsDataStart }) => {
-  const { uid: customerUID } = React.useContext(UserContext);
   const [endDate, setEndDate] = React.useState(today);
   const [startDate, setStartDate] = React.useState(lastWeek);
 
   React.useEffect(() => {
-    if (customerUID) {
-      fetchAnalyticsDataStart(customerUID, startDate, endDate);
-    }
-  }, [customerUID, startDate, endDate, fetchAnalyticsDataStart]);
+    fetchAnalyticsDataStart(startDate, endDate);
+  }, [startDate, endDate, fetchAnalyticsDataStart]);
 
-  // Data transformations (this is duplicated code, please refactor)
-  const audioLength =
-    data.length && determineUnitsOfTime(sumDocuments(data, "audioLength"));
-  const averageAudioLength =
-    data.length &&
-    determineUnitsOfTime(sumDocuments(data, "audioLength", true));
-  const averageSentimentScore =
-    data.length &&
-    sumDocuments(
-      data.map((doc) => doc["sentiment"]),
-      "documentSentimentScore",
-      true
-    );
-  const rows =
-    data.length &&
-    data.map(({ date, transcription, categories, keywords, sentiment }) => ({
-      date: date.toDate().toLocaleDateString(),
-      transcription,
-      categories: Object.keys(categories).join(", "),
-      keywords: Object.keys(keywords).join(", "),
-      sentiment: determinateSentimentIcon(sentiment.documentSentimentScore),
-    }));
-  const exportedRows =
-    data.length &&
-    data.map(({ date, transcription, categories, keywords, sentiment }) => {
-      return [
-        date.toDate().toLocaleDateString(),
-        transcription,
-        Object.keys(categories).join(", "),
-        Object.keys(keywords).join(", "),
-        sentiment.documentSentimentScore,
-      ];
-    });
-  const audioLengthInTime =
-    data.length && convertDataForLine(data, "date", ["audioLength"]);
-  const averageAudioLenghtInTime =
-    data.length && convertDataForLine(data, "date", ["audioLength"], true);
-  const keywords = data.length && convertDataForWordCloud(data, "keywords");
-  const categories = data.length && convertDataForWordCloud(data, "categories");
-  const frequencyCategories =
-    data.length && convertDataForBars(data, "categories", MAX_ELEMENTS_IN_BARS);
-  const frequencyKeywords = convertDataForBars(
-    data,
-    "keywords",
-    MAX_ELEMENTS_IN_BARS
-  );
+  // Data for our graphs and tables
+  const {
+    audioLength,
+    averageAudioLength,
+    averageSentimentScore,
+    rows,
+    exportedRows,
+    audioLengthInTime,
+    averageAudioLenghtInTime,
+    keywords,
+    categories,
+    frequencyCategories,
+    frequencyKeywords,
+  } = processAnalytics(data);
 
   return data.length ? (
     <React.Fragment>
@@ -242,8 +200,8 @@ const mapStateToProps = (store) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchAnalyticsDataStart: (customerUID, startDate, endDate) =>
-    dispatch(fetchAnalyticsDataStart(customerUID, startDate, endDate)),
+  fetchAnalyticsDataStart: (startDate, endDate) =>
+    dispatch(fetchAnalyticsDataStart(startDate, endDate)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Analytics);
