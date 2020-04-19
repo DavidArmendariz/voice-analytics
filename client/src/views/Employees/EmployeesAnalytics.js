@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { selecEmployeeById } from "../../redux/employees/employees.selectors";
+import { selectTranscriptions } from "../../redux/transcriptions/transcriptions.selectors";
 import { fetchTranscriptionsStart } from "../../redux/transcriptions/transcriptions.actions";
 import Grid from "@material-ui/core/Grid";
 import sumDocuments from "analytics/sumDocuments";
@@ -248,7 +249,7 @@ const EmployeesAnalytics = ({ employee, fetchTranscriptionsStart, data }) => {
 
 const mapStateToProps = (state, ownProps) => ({
   employee: selecEmployeeById(ownProps.match.params.employeeUid)(state),
-  data: state.transcriptions.data,
+  data: selectTranscriptions(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
