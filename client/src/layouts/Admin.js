@@ -11,6 +11,7 @@ import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
 import { connect } from "react-redux";
 import { fetchEmployeesStart } from "../redux/employees/employees.actions";
+import CustomSnackbar from "components/CustomSnackbar/CustomSnackbar";
 
 let ps;
 
@@ -90,6 +91,7 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
         <div className={classes.content}>
           <div className={classes.container}>{switchRoutes}</div>
         </div>
+        <CustomSnackbar />
         <Footer />
       </div>
     </div>

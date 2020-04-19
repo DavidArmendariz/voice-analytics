@@ -9,23 +9,30 @@ import Button from "@material-ui/core/Button";
 import processText from "utils/processText";
 import ProcessingInfo from "components/ProcessingInfo/ProcessingInfo";
 import CustomTable from "components/CustomTable/CustomTable";
+import { connect } from "react-redux";
+import { openSnackbar } from "../../redux/snackbarstatus/snackbarstatus.actions";
 
 const useStyles = makeStyles(styles);
 
-const UpgradeToPro = () => {
+const UpgradeToPro = ({ openSnackbar }) => {
   const classes = useStyles();
   const [text, setText] = React.useState("Your text goes here");
   const [metadata, setMetadata] = React.useState(null);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await processText(text);
-    setMetadata({
-      keywords: Object.keys(response.keywords).join(", "),
-      categories: Object.keys(response.categories).join(", "),
-      score: response.documentSentimentScore,
-      magnitude: response.documentSentimentMagnitude,
-      entities: response.entities,
-    });
+    try {
+      const response = await processText(text);
+      setMetadata({
+        keywords: Object.keys(response.keywords).join(", "),
+        categories: Object.keys(response.categories).join(", "),
+        score: response.documentSentimentScore,
+        magnitude: response.documentSentimentMagnitude,
+        entities: response.entities,
+      });
+    } catch (error) {
+      console.log(error);
+      openSnackbar("Something went wrong", "error");
+    }
   };
   const onChangeHandler = (event) => {
     const { value } = event.currentTarget;
@@ -94,4 +101,9 @@ const UpgradeToPro = () => {
   );
 };
 
-export default UpgradeToPro;
+const mapDispatchToProps = (dispatch) => ({
+  openSnackbar: (message, severity) =>
+    dispatch(openSnackbar(message, severity)),
+});
+
+export default connect(null, mapDispatchToProps)(UpgradeToPro);

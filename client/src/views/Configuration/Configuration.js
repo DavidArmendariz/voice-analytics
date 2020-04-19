@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import CustomizedSnackbars from "components/CustomSnackbar/CustomSnackbar";
+import { openSnackbar } from "../../redux/snackbarstatus/snackbarstatus.actions";
 import { UserContext } from "../../providers/UserProvider";
 import axios from "axios";
 import { connect } from "react-redux";
@@ -24,14 +24,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserProfile = ({ employees }) => {
+const UserProfile = ({ employees, openSnackbar }) => {
   const classes = useStyles();
   const [name, setName] = React.useState("David");
-  const [open, setOpen] = React.useState(false);
-  const [message, setMessage] = React.useState("");
   const { uid: customerUID } = React.useContext(UserContext);
   const [employeeUID, setEmployeeUID] = React.useState("");
-  const [severity, setSeverity] = React.useState("");
 
   const onChangeHandler = (event) => {
     const { name, value } = event.currentTarget;
@@ -54,13 +51,9 @@ const UserProfile = ({ employees }) => {
           Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
         },
       });
-      setMessage("Employee added sucessfully");
-      setSeverity("success");
+      openSnackbar("Employee added successfully", "success");
     } catch (error) {
-      setMessage("Oops! Something went wrong. Try again.");
-      setSeverity("error");
-    } finally {
-      setOpen(true);
+      openSnackbar("Something went wrong", "error");
     }
   };
 
@@ -79,13 +72,9 @@ const UserProfile = ({ employees }) => {
           Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
         },
       });
-      setMessage("Employee deleted sucessfully");
-      setSeverity("success");
+      openSnackbar("Employee added successfully", "success");
     } catch (error) {
-      setMessage("Oops! Something went wrong. Try again.");
-      setSeverity("error");
-    } finally {
-      setOpen(true);
+      openSnackbar("Something went wrong", "error");
     }
   };
 
@@ -99,7 +88,12 @@ const UserProfile = ({ employees }) => {
         </Grid>
       </Grid>
       <Grid container justify="center">
-        <form className={classes.root} noValidate autoComplete="off" onSubmit={onCreateClick}>
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={onCreateClick}
+        >
           <TextField
             required
             name="name"
@@ -125,7 +119,12 @@ const UserProfile = ({ employees }) => {
         </Typography>
       </Grid>
       <Grid container justify="center">
-        <form className={classes.root} noValidate autoComplete="off" onSubmit={onDeleteClick}>
+        <form
+          className={classes.root}
+          noValidate
+          autoComplete="off"
+          onSubmit={onDeleteClick}
+        >
           <Options
             title={"Select employee"}
             options={arrayToObject(employees, "name", "uid")}
@@ -143,12 +142,6 @@ const UserProfile = ({ employees }) => {
           </Button>
         </form>
       </Grid>
-      <CustomizedSnackbars
-        message={message}
-        open={open}
-        setOpen={setOpen}
-        severity={severity}
-      />
     </Grid>
   ) : null;
 };
@@ -157,4 +150,9 @@ const mapStateToProps = (store) => ({
   employees: store.employees.employees,
 });
 
-export default connect(mapStateToProps)(UserProfile);
+const mapDispatchToProps = (dispatch) => ({
+  openSnackbar: (message, severity) =>
+    dispatch(openSnackbar(message, severity)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);
