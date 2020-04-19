@@ -8,15 +8,18 @@ import NotificationsActionTypes from "./notifications.types";
 import {
   fetchNotificationsSuccess,
   fetchNotificationsFailure,
+  fetchNotificationsByDateSuccess,
+  fetchNotificationsByDateFailure,
 } from "./notifications.actions";
 
-export function* fetchNotifications() {
+export function* fetchNotificationsByStatus() {
   try {
     const customerUID = yield auth.currentUser.uid;
     const notificationsReference = firestore
       .collection("customers")
       .doc(customerUID)
-      .collection("notifications");
+      .collection("notifications")
+      .where("seen", "==", false);
     const notificationsSnapshot = yield notificationsReference.get();
     const notifications = yield call(
       getDocumentsFromSnapshot,
@@ -29,10 +32,41 @@ export function* fetchNotifications() {
   }
 }
 
+export function* fetchNotificationsByDate({ startDate, endDate }) {
+  try {
+    const customerUID = yield auth.currentUser.uid;
+    const notificationsReference = firestore
+      .collection("customers")
+      .doc(customerUID)
+      .collection("notifications")
+      .where("date", ">=", startDate)
+      .where("date", "<=", endDate);
+    const notificationsSnapshot = yield notificationsReference.get();
+    const notifications = yield call(
+      getDocumentsFromSnapshot,
+      notificationsSnapshot
+    );
+    yield put(fetchNotificationsByDateSuccess(notifications));
+  } catch (error) {
+    console.log(`Error in fetchNotificationsByDate: ${error}`);
+    yield put(fetchNotificationsByDateFailure(error.message));
+  }
+}
+
 export function* fetchNotificationsSaga() {
-  yield takeLatest(NotificationsActionTypes.FETCH_NOTIFICATIONS_START, fetchNotifications);
+  yield takeLatest(
+    NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_STATUS_START,
+    fetchNotificationsByStatus
+  );
+}
+
+export function* fetchNotificationsByDateSaga() {
+  yield takeLatest(
+    NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_DATE_START,
+    fetchNotificationsByDate
+  );
 }
 
 export function* notificationsSagas() {
-  yield all([call(fetchNotificationsSaga)]);
+  yield all([call(fetchNotificationsSaga), call(fetchNotificationsByDateSaga)]);
 }

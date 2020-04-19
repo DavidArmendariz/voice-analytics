@@ -6,8 +6,20 @@ import { selectNotificationsAsTable } from "../../redux/notifications/notificati
 import CustomTable from "components/CustomTable/CustomTable";
 import ExportButton from "components/ExportButton/ExportButton";
 import Typography from "@material-ui/core/Typography";
+import { fetchNotificationsByDateStart } from "../../redux/notifications/notifications.actions";
+import { handleStartDateChange, handleEndDateChange } from "utils/dateHandlers";
+import StartEndDatePicker from "components/StartEndDatePicker/StartEndDatePicker";
+import { today, lastWeek } from "constants/dates.constants";
 
-const NotificationsList = ({ notifications }) => {
+const NotificationsList = ({
+  notifications,
+  fetchNotificationsByDateStart,
+}) => {
+  const [startDate, setStartDate] = React.useState(lastWeek);
+  const [endDate, setEndDate] = React.useState(today);
+  React.useEffect(() => {
+    fetchNotificationsByDateStart(startDate, endDate);
+  }, [fetchNotificationsByDateStart, startDate, endDate]);
   return (
     notifications && (
       <Grid container spacing={5}>
@@ -15,6 +27,18 @@ const NotificationsList = ({ notifications }) => {
           <Typography variant="h4" gutterBottom>
             Filter your notifications by date
           </Typography>
+        </Grid>
+        <Grid container item justify="center" style={{ height: "70px" }}>
+          <StartEndDatePicker
+            startDate={startDate}
+            endDate={endDate}
+            handleStartDate={(date) =>
+              handleStartDateChange(date, endDate, setStartDate)
+            }
+            handleEndDate={(date) =>
+              handleEndDateChange(date, startDate, setEndDate)
+            }
+          />
         </Grid>
         <Grid container item justify="flex-end">
           <ExportButton
@@ -37,4 +61,9 @@ const mapStateToProps = createStructuredSelector({
   notifications: selectNotificationsAsTable,
 });
 
-export default connect(mapStateToProps)(NotificationsList);
+const mapDispatchToProps = (dispatch) => ({
+  fetchNotificationsByDateStart: (startDate, endDate) =>
+    dispatch(fetchNotificationsByDateStart(startDate, endDate)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationsList);

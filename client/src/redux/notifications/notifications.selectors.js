@@ -7,8 +7,14 @@ export const selectNotifications = createSelector(
   (notifications) => notifications.notifications.sort((a, b) => b.date - a.date)
 );
 
+export const selectNotificationsByDate = createSelector(
+  [selectNotificationsFromStore],
+  (notifications) =>
+    notifications.notificationsByDate.sort((a, b) => b.date - a.date)
+);
+
 export const selectNotificationsAsTable = createSelector(
-  [selectNotifications],
+  [selectNotificationsByDate],
   (notifications) =>
     notifications
       ? notifications.map(({ date, message }) => ({
