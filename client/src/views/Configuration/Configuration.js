@@ -72,7 +72,7 @@ const UserProfile = ({ employees, openSnackbar }) => {
           Authorization: "Bearer 7a8af36b34fa7e01e0d5d16c48e93f68",
         },
       });
-      openSnackbar("Employee added successfully", "success");
+      openSnackbar("Employee deleted successfully", "success");
     } catch (error) {
       openSnackbar("Something went wrong", "error");
     }
