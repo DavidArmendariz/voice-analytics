@@ -1,3 +1,6 @@
+import React from "react";
+import DoneIcon from "@material-ui/icons/Done";
+import CloseIcon from "@material-ui/icons/Close";
 import { createSelector } from "reselect";
 
 const selectNotificationsFromStore = (store) => store.notifications;
@@ -17,9 +20,10 @@ export const selectNotificationsAsTable = createSelector(
   [selectNotificationsByDate],
   (notifications) =>
     notifications
-      ? notifications.map(({ date, message }) => ({
+      ? notifications.map(({ date, message, seen }) => ({
           date: date.toDate().toLocaleString(),
           message,
+          seen: seen ? <DoneIcon /> : <CloseIcon />,
         }))
       : null
 );

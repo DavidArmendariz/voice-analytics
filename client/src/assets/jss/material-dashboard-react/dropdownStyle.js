@@ -1,20 +1,18 @@
 import {
-  primaryColor,
   whiteColor,
-  primaryBoxShadow,
   defaultFont,
   blackColor,
   grayColor,
-  hexToRgb
+  hexToRgb,
 } from "assets/jss/material-dashboard-react.js";
 
-const dropdownStyle = theme => ({
+const dropdownStyle = (theme) => ({
   buttonLink: {
     [theme.breakpoints.down("md")]: {
       display: "flex",
       marginLeft: "30px",
-      width: "auto"
-    }
+      width: "auto",
+    },
   },
   links: {
     width: "20px",
@@ -25,16 +23,16 @@ const dropdownStyle = theme => ({
       width: "30px",
       height: "30px",
       color: grayColor[9],
-      marginRight: "15px"
-    }
+      marginRight: "15px",
+    },
   },
   linkText: {
     zIndex: "4",
     ...defaultFont,
-    fontSize: "14px"
+    fontSize: "14px",
   },
   popperClose: {
-    pointerEvents: "none"
+    pointerEvents: "none",
   },
   pooperResponsive: {
     [theme.breakpoints.down("md")]: {
@@ -47,8 +45,8 @@ const dropdownStyle = theme => ({
       border: "0",
       WebkitBoxShadow: "none",
       boxShadow: "none",
-      color: "black"
-    }
+      color: "black",
+    },
   },
   popperNav: {
     [theme.breakpoints.down("sm")]: {
@@ -72,11 +70,11 @@ const dropdownStyle = theme => ({
           padding: "10px 15px !important",
           "&:hover": {
             backgroundColor: "hsla(0,0%,78%,.2)",
-            boxShadow: "none"
-          }
-        }
-      }
-    }
+            boxShadow: "none",
+          },
+        },
+      },
+    },
   },
   dropdown: {
     borderRadius: "3px",
@@ -92,7 +90,7 @@ const dropdownStyle = theme => ({
     listStyle: "none",
     backgroundColor: whiteColor,
     WebkitBackgroundClip: "padding-box",
-    backgroundClip: "padding-box"
+    backgroundClip: "padding-box",
   },
   dropdownItem: {
     ...defaultFont,
@@ -113,12 +111,7 @@ const dropdownStyle = theme => ({
     whiteSpace: "nowrap",
     height: "unset",
     minHeight: "unset",
-    "&:hover": {
-      backgroundColor: primaryColor[0],
-      color: whiteColor,
-      ...primaryBoxShadow
-    }
-  }
+  },
 });
 
 export default dropdownStyle;

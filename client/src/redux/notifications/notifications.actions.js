@@ -1,8 +1,7 @@
 import NotificationsActionTypes from "./notifications.types";
 
-export const fetchNotificationsStart = (customerUID) => ({
+export const fetchNotificationsStart = () => ({
   type: NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_STATUS_START,
-  customerUID,
 });
 
 export const fetchNotificationsSuccess = (notifications) => ({
@@ -29,4 +28,18 @@ export const fetchNotificationsByDateSuccess = (notifications) => ({
 export const fetchNotificationsByDateFailure = (errorMessage) => ({
   type: NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_DATE_FAILURE,
   errorMessage,
+});
+
+export const changeNotificationsStatusStart = (notificationUID) => ({
+  type: NotificationsActionTypes.CHANGE_NOTIFICATIONS_STATUS_START,
+  notificationUID,
+});
+
+export const changeNotificationsStatusSuccess = () => ({
+  type: NotificationsActionTypes.CHANGE_NOTIFICATIONS_STATUS_SUCCESS,
+});
+
+export const changeNotificationsStatusFailure = (error) => ({
+  type: NotificationsActionTypes.CHANGE_NOTIFICATIONS_STATUS_FAILURE,
+  error,
 });

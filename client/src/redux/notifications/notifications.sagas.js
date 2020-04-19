@@ -10,6 +10,8 @@ import {
   fetchNotificationsFailure,
   fetchNotificationsByDateSuccess,
   fetchNotificationsByDateFailure,
+  changeNotificationsStatusFailure,
+  changeNotificationsStatusSuccess,
 } from "./notifications.actions";
 
 export function* fetchNotificationsByStatus() {
@@ -53,6 +55,25 @@ export function* fetchNotificationsByDate({ startDate, endDate }) {
   }
 }
 
+export function* changeNotificationsStatus({ notificationUID }) {
+  try {
+    console.log("Intercepted");
+    const customerUID = yield auth.currentUser.uid;
+    yield firestore
+      .collection("customers")
+      .doc(customerUID)
+      .collection("notifications")
+      .doc(notificationUID)
+      .update({
+        seen: true,
+      });
+    yield put(changeNotificationsStatusSuccess());
+  } catch (error) {
+    console.log(`Error in changeNotificationsStatus: ${error}`);
+    yield put(changeNotificationsStatusFailure(error.message));
+  }
+}
+
 export function* fetchNotificationsSaga() {
   yield takeLatest(
     NotificationsActionTypes.FETCH_NOTIFICATIONS_BY_STATUS_START,
@@ -67,6 +88,17 @@ export function* fetchNotificationsByDateSaga() {
   );
 }
 
+export function* changeNotificationsStatusSaga() {
+  yield takeLatest(
+    NotificationsActionTypes.CHANGE_NOTIFICATIONS_STATUS_START,
+    changeNotificationsStatus
+  );
+}
+
 export function* notificationsSagas() {
-  yield all([call(fetchNotificationsSaga), call(fetchNotificationsByDateSaga)]);
+  yield all([
+    call(fetchNotificationsSaga),
+    call(fetchNotificationsByDateSaga),
+    call(changeNotificationsStatusSaga),
+  ]);
 }

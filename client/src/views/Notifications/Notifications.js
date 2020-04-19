@@ -54,7 +54,7 @@ const NotificationsList = ({
         />
       </Grid>
       <Grid container item justify="center">
-        <CustomTable headers={["Date", "Message"]} rows={notifications} />
+        <CustomTable headers={["Date", "Message", "Seen"]} rows={notifications} />
       </Grid>
     </Grid>
   ) : (

@@ -16,12 +16,19 @@ import styles from "assets/jss/material-dashboard-react/components/headerLinksSt
 import { auth } from "../../firebase/firebase.utils";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchNotificationsStart } from "../../redux/notifications/notifications.actions";
+import {
+  fetchNotificationsStart,
+  changeNotificationsStatusStart,
+} from "../../redux/notifications/notifications.actions";
 
 const useStyles = makeStyles(styles);
 
 const AdminNavbarLinks = (props) => {
-  const { fetchNotificationsStart, notifications } = props;
+  const {
+    fetchNotificationsStart,
+    notifications,
+    changeNotificationsStatusStart,
+  } = props;
   React.useEffect(() => {
     fetchNotificationsStart();
   }, [fetchNotificationsStart]);
@@ -98,8 +105,15 @@ const AdminNavbarLinks = (props) => {
                           onClick={handleCloseNotification}
                           className={classes.dropdownItem}
                         >
-                          <Link to="/admin/notifications">
+                          <Link
+                            to="/admin/notifications"
+                            onClick={() =>
+                              changeNotificationsStatusStart(notification.uid)
+                            }
+                          >
                             {notification.message}
+                            <br />
+                            {notification.date.toDate().toLocaleString()}
                           </Link>
                         </MenuItem>
                       );
@@ -178,8 +192,9 @@ const mapStateToProps = (store) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchNotificationsStart: (customerUID) =>
-    dispatch(fetchNotificationsStart(customerUID)),
+  fetchNotificationsStart: () => dispatch(fetchNotificationsStart()),
+  changeNotificationsStatusStart: (notificationUID) =>
+    dispatch(changeNotificationsStatusStart(notificationUID)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AdminNavbarLinks);
