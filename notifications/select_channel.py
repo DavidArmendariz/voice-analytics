@@ -3,9 +3,10 @@ from errors import not_a_number, invalid_option
 from analyze_general_performance import analyze_general_performance
 from datetime import datetime, timedelta
 from send_to_dashboard import send_to_dashboard
+from send_to_email import send_to_email
 
 
-def select_channel(customer_uid, option, channel):
+def select_channel(customer, option, channel):
     while True:
         print("Where do you want your notifications to be sent?")
         print("1.- To the dashboard")
@@ -26,11 +27,15 @@ def select_channel(customer_uid, option, channel):
         else:
             clear()
             notification_info, formatted_message = analyze_general_performance(
-                customer_uid, start_date, end_date)
+                customer["uid"], start_date, end_date)
             if channel == 1:
                 print("Sending your notification to the dashboard...")
                 notification = {"date": datetime.today(
                 ), "seen": False, "message": formatted_message}
-                send_to_dashboard(customer_uid, notification)
+                send_to_dashboard(customer["uid"], notification)
                 return True
-
+            elif channel == 2:
+                contact_email = customer["contactEmail"]
+                print(f"Sending your notification to {contact_email}")
+                send_to_email(notification_info, customer["contactEmail"])
+                return True

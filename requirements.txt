@@ -11,3 +11,4 @@ python-dotenv
 flask-cors
 googletrans
 pandas
+sendgrid

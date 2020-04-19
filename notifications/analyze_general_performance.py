@@ -42,7 +42,8 @@ def analyze_general_performance(customer_uid, start_date, end_date):
               "averageAudioLength": average_audio_length,
               "totalAudioLength": total_audio_length,
               "topCategories": top_categories,
-              "topKeywords": top_keywords}
+              "topKeywords": top_keywords,
+              "date": datetime.now().strftime("%m/%d/%Y")}
     formatted_message = f"""
     Average sentiment score: {average_sentiment_score}
     Average audio length: {average_audio_length}

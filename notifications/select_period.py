@@ -3,7 +3,7 @@ from select_channel import select_channel
 from errors import not_a_number, invalid_option
 
 
-def select_period(customer_uid, option):
+def select_period(customer, option):
     while True:
         print("How many days you want to analyze?")
         print("Example 1: if you want to analyze the last seven days, type 7.")
@@ -21,7 +21,7 @@ def select_period(customer_uid, option):
             invalid_option()
         else:
             clear()
-            done = select_channel(customer_uid, option, days)
+            done = select_channel(customer, option, days)
             if done == -1:
                 clear()
             elif done == True:

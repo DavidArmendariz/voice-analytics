@@ -21,9 +21,9 @@ def admin():
         elif option == (len(customers)+1):
             break
         else:
-            customer_uid = customers[option-1]["uid"]
+            customer = customers[option-1]
             clear()
-            show_options(customer_uid)
+            show_options(customer)
             print("Message sent successfully!")
             time.sleep(4)
         clear()

@@ -3,7 +3,7 @@ from select_period import select_period
 from errors import not_a_number, invalid_option
 
 
-def show_options(customer_uid):
+def show_options(customer):
     while True:
         print("Select one of the options:")
         print("1.- Send notification about general performance")
@@ -18,14 +18,14 @@ def show_options(customer_uid):
         else:
             if option == 1:
                 clear()
-                done = select_period(customer_uid, option)
+                done = select_period(customer, option)
                 if done == -1:
                     pass
                 elif done == True:
                     return True
             elif option == 2:
                 clear()
-                done = select_period(customer_uid, option)
+                done = select_period(customer, option)
                 if done == -1:
                     pass
                 elif done == True:
