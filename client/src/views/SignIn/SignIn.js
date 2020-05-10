@@ -1,32 +1,30 @@
 import React, { useState } from "react";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { auth } from "../../firebase/firebase.utils";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%",
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 const SignIn = () => {
@@ -34,12 +32,12 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const signInWithEmailAndPasswordHandler = (event, email, password) => {
     event.preventDefault();
-    auth.signInWithEmailAndPassword(email, password).catch(error => {
+    auth.signInWithEmailAndPassword(email, password).catch((error) => {
       console.error("Error signing in with password and email", error);
     });
   };
 
-  const onChangeHandler = event => {
+  const onChangeHandler = (event) => {
     const { name, value } = event.currentTarget;
 
     if (name === "email") {
@@ -55,9 +53,7 @@ const SignIn = () => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
+        <img src={"/worditlogo.png"} alt="logo" />
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
@@ -72,7 +68,7 @@ const SignIn = () => {
             name="email"
             autoComplete="email"
             autoFocus
-            onChange={event => onChangeHandler(event)}
+            onChange={(event) => onChangeHandler(event)}
           />
           <TextField
             variant="outlined"
@@ -84,7 +80,7 @@ const SignIn = () => {
             type="password"
             id="password"
             autoComplete="current-password"
-            onChange={event => onChangeHandler(event)}
+            onChange={(event) => onChangeHandler(event)}
           />
           <Button
             type="submit"
@@ -92,7 +88,7 @@ const SignIn = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={event =>
+            onClick={(event) =>
               signInWithEmailAndPasswordHandler(event, email, password)
             }
           >

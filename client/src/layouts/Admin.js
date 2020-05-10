@@ -75,7 +75,7 @@ const Admin = ({ fetchEmployeesStart, ...rest }) => {
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"Voice analysis dashboard"}
+        logoText={""}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}

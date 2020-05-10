@@ -29,15 +29,15 @@ export default function Sidebar(props) {
         if (prop.path === "/upgrade-to-pro") {
           activePro = classes.activePro + " ";
           listItemClasses = classNames({
-            [" " + classes[color]]: true
+            [" " + classes[color]]: true,
           });
         } else {
           listItemClasses = classNames({
-            [" " + classes[color]]: activeRoute(prop.layout + prop.path)
+            [" " + classes[color]]: activeRoute(prop.layout + prop.path),
           });
         }
         const whiteFontClasses = classNames({
-          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
+          [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path),
         });
         return (
           <NavLink
@@ -54,10 +54,10 @@ export default function Sidebar(props) {
                   {prop.icon}
                 </Icon>
               ) : (
-                  <prop.icon
-                    className={classNames(classes.itemIcon, whiteFontClasses)}
-                  />
-                )}
+                <prop.icon
+                  className={classNames(classes.itemIcon, whiteFontClasses)}
+                />
+              )}
               <ListItemText
                 primary={prop.name}
                 className={classNames(classes.itemText, whiteFontClasses)}
@@ -79,6 +79,7 @@ export default function Sidebar(props) {
       >
         {logoText}
       </a>
+      <img src={"/worditlogo.png"} />
     </div>
   );
   return (
@@ -88,11 +89,11 @@ export default function Sidebar(props) {
           variant="temporary"
           open={props.open}
           classes={{
-            paper: classNames(classes.drawerPaper)
+            paper: classNames(classes.drawerPaper),
           }}
           onClose={props.handleDrawerToggle}
           ModalProps={{
-            keepMounted: true
+            keepMounted: true,
           }}
         >
           {brand}
@@ -114,7 +115,7 @@ export default function Sidebar(props) {
           variant="permanent"
           open
           classes={{
-            paper: classNames(classes.drawerPaper)
+            paper: classNames(classes.drawerPaper),
           }}
         >
           {brand}
@@ -138,5 +139,5 @@ Sidebar.propTypes = {
   logoText: PropTypes.string,
   routes: PropTypes.arrayOf(PropTypes.object),
   open: PropTypes.bool,
-  color: PropTypes.string
+  color: PropTypes.string,
 };

@@ -8,17 +8,15 @@ import { languages } from "../../constants/languages.constants";
 import arrayToObject from "../../utils/arrayToObject";
 import processAudio from "../../utils/processAudio";
 import Loader from "react-loader-spinner";
-import { UserContext } from "../../providers/UserProvider";
 import ProcessingInfo from "components/ProcessingInfo/ProcessingInfo";
 
-const Dashboard = ({ employees }) => {
+const Dashboard = ({ employees, customerMetadata }) => {
   const [file, setFile] = React.useState(null);
   const [transcription, setTranscription] = React.useState(null);
   const [employeeUID, setEmployeeUID] = React.useState(null);
   const [languageCode, setLanguageCode] = React.useState(null);
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [metadata, setMetadata] = React.useState(null);
-  const { uid: customerUID } = React.useContext(UserContext);
 
   const handleUpload = (event) => {
     setFile(event.target.files[0]);
@@ -28,12 +26,12 @@ const Dashboard = ({ employees }) => {
     const formData = new FormData();
     formData.append("file", file);
     setIsProcessing(true);
-    processAudio(customerUID, employeeUID, languageCode, formData)
+    processAudio(customerMetadata.uid, employeeUID, languageCode, formData)
       .then((response) => {
         if (response) {
           setTranscription(response.transcription);
           setMetadata({
-            audioLength: response.audioLength,
+            audioLength: response.audioLength.toFixed(2),
             sampleRate: response.sampleRate,
             categories: Object.keys(response.categories).join(", "),
             keywords: Object.keys(response.keywords).join(", "),
@@ -46,8 +44,11 @@ const Dashboard = ({ employees }) => {
       .then(() => setIsProcessing(false));
   };
 
-  return employees ? (
+  return employees && customerMetadata ? (
     <React.Fragment>
+      <Grid container item justify="center">
+        <Typography variant="h3">Welcome to {customerMetadata.customerName} dashboard!</Typography>
+      </Grid>
       <Grid container alignItems="center" spacing={6}>
         <Grid item>
           <img
@@ -57,8 +58,10 @@ const Dashboard = ({ employees }) => {
           />
         </Grid>
         <Grid container item xs={10}>
-          Speech-to-text the calls of your agents to extract meaningful metrics
-          that can improve your business operations.
+          <Typography variant="h5">
+            Speech-to-text calls to extract meaningful metrics that can improve
+            your business operations.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center" spacing={6}>
@@ -70,8 +73,10 @@ const Dashboard = ({ employees }) => {
           />
         </Grid>
         <Grid container item xs={10}>
-          Analyze conversation metrics like overtalk, talk style, tone, volume,
-          confidence and sentiment.
+          <Typography variant="h5">
+            Analyze conversation metrics like overtalk, talk style, tone,
+            volume, confidence and sentiment.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center" spacing={6}>
@@ -83,7 +88,9 @@ const Dashboard = ({ employees }) => {
           />
         </Grid>
         <Grid container item xs={10}>
-          Discover keywords and topics in your calls using semantic indexing.
+          <Typography variant="h5">
+            Discover keywords and topics in your calls using semantic indexing.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center" spacing={6}>
@@ -95,7 +102,9 @@ const Dashboard = ({ employees }) => {
           />
         </Grid>
         <Grid container item xs={10}>
-          Spot keywords and phrases important to your business brand.
+          <Typography variant="h5">
+            Spot keywords and phrases important to your business brand.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center" spacing={6}>
@@ -107,20 +116,22 @@ const Dashboard = ({ employees }) => {
           />
         </Grid>
         <Grid container item xs={10}>
-          Predict leads and prospects, customer churn, detect appointments,
-          estimates and orders.
+          <Typography variant="h5">
+            Predict leads and prospects, customer churn, detect appointments,
+            estimates and orders.
+          </Typography>
         </Grid>
       </Grid>
       <Grid container alignItems="center" spacing={6}>
         <Grid item>
           <img
             style={{ width: "150px", height: "150px" }}
-            src="/swear.png"
-            alt="swear"
+            src="/more.png"
+            alt="more"
           />
         </Grid>
         <Grid container item xs={10}>
-          Spot swear words that can affect your business brand potentially.
+          <Typography variant="h5">And much more things!</Typography>
         </Grid>
       </Grid>
       <Grid container justify="center" spacing={6}>
@@ -195,15 +206,24 @@ const Dashboard = ({ employees }) => {
           <Grid container justify="center">
             <Typography variant="h2">Your transcription</Typography>
           </Grid>
-          <div style={{ height: "70px" }}>{transcription}</div>
+          <div style={{ height: "70px", marginLeft: 50, marginRight: 50 }}>
+            {transcription}
+          </div>
         </Grid>
       ) : null}
     </React.Fragment>
-  ) : null;
+  ) : (
+    <Grid container item justify="center">
+      <Loader type="Oval" />
+    </Grid>
+  );
 };
 
-const mapStateToProps = (store) => ({
-  employees: store.employees.employees,
-});
+const mapStateToProps = (store) => {
+  return {
+    employees: store.employees.employees,
+    customerMetadata: store.customerMetadata.customerMetadata,
+  };
+};
 
 export default connect(mapStateToProps)(Dashboard);

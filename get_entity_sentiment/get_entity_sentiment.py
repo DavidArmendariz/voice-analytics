@@ -14,8 +14,8 @@ def _get_entity_sentiment(text_content, language):
         result = dict()
         result["nameOfEntity"] = entity.name
         result["entityType"] = enums.Entity.Type(entity.type).name
-        result["salienceScore"] = entity.salience
-        result["sentimentScore"] = entity.sentiment.score
-        result["sentimentMagnitude"] = entity.sentiment.magnitude
+        result["salienceScore"] = round(entity.salience, 2)
+        result["sentimentScore"] = round(entity.sentiment.score, 2)
+        result["sentimentMagnitude"] = round(entity.sentiment.magnitude, 2)
         results.append(result)
     return results

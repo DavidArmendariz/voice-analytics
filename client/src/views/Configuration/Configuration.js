@@ -11,6 +11,7 @@ import axios from "axios";
 import { connect } from "react-redux";
 import Options from "../../components/Select/Select";
 import arrayToObject from "utils/arrayToObject";
+import ChipInput from "material-ui-chip-input";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -141,6 +142,15 @@ const UserProfile = ({ employees, openSnackbar }) => {
             Delete
           </Button>
         </form>
+      </Grid>
+      <Grid container item justify="center">
+        <Typography variant="h3">Spot these keywords...</Typography>
+      </Grid>
+      <Grid container item justify="center">
+        <ChipInput
+          defaultValue={["promotion", "plans"]}
+          onChange={(chips) => console.log(chips)}
+        />
       </Grid>
     </Grid>
   ) : null;

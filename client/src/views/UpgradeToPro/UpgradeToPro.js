@@ -28,8 +28,8 @@ const UpgradeToPro = ({ openSnackbar }) => {
       setMetadata({
         keywords: Object.keys(response.keywords).join(", "),
         categories: Object.keys(response.categories).join(", "),
-        score: response.documentSentimentScore,
-        magnitude: response.documentSentimentMagnitude,
+        score: response.documentSentimentScore.toFixed(2),
+        magnitude: response.documentSentimentMagnitude.toFixed(2),
         entities: response.entities,
       });
     } catch (error) {
