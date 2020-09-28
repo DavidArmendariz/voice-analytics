@@ -1,8 +1,14 @@
 google-cloud-storage
 google-cloud-speech
+google-cloud-language
 flask
 autopep8
-wheel
 functions-framework
+firebase-admin
+mutagen
+multi-rake
+python-dotenv
 flask-cors
-requests
+googletrans
+pandas
+sendgrid

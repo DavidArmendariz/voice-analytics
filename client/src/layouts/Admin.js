@@ -9,6 +9,9 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import routes from "routes.js";
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 import bgImage from "assets/img/sidebar-2.jpg";
+import { connect } from "react-redux";
+import { fetchEmployeesStart } from "../redux/employees/employees.actions";
+import CustomSnackbar from "components/CustomSnackbar/CustomSnackbar";
 
 let ps;
 
@@ -32,17 +35,15 @@ const switchRoutes = (
 
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+const Admin = ({ fetchEmployeesStart, ...rest }) => {
   const classes = useStyles();
   const mainPanel = React.createRef();
   const [image] = React.useState(bgImage);
   const [color] = React.useState("blue");
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  };
-  const getRoute = () => {
-    return window.location.pathname !== "/admin/maps";
   };
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
@@ -53,7 +54,7 @@ export default function Admin({ ...rest }) {
     if (navigator.platform.indexOf("Win") > -1) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
-        suppressScrollY: false
+        suppressScrollY: false,
       });
       document.body.style.overflow = "hidden";
     }
@@ -65,11 +66,16 @@ export default function Admin({ ...rest }) {
       window.removeEventListener("resize", resizeFunction);
     };
   }, [mainPanel]);
+
+  React.useEffect(() => {
+    fetchEmployeesStart();
+  }, [fetchEmployeesStart]);
+
   return (
     <div className={classes.wrapper}>
       <Sidebar
         routes={routes}
-        logoText={"Voice analysis dashboard"}
+        logoText={""}
         image={image}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
@@ -82,15 +88,18 @@ export default function Admin({ ...rest }) {
           handleDrawerToggle={handleDrawerToggle}
           {...rest}
         />
-        {getRoute() ? (
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
-          </div>
-        ) : (
-          <div className={classes.map}>{switchRoutes}</div>
-        )}
-        {getRoute() ? <Footer /> : null}
+        <div className={classes.content}>
+          <div className={classes.container}>{switchRoutes}</div>
+        </div>
+        <CustomSnackbar />
+        <Footer />
       </div>
     </div>
   );
-}
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchEmployeesStart: () => dispatch(fetchEmployeesStart()),
+});
+
+export default connect(null, mapDispatchToProps)(Admin);

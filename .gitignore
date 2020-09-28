@@ -27,3 +27,15 @@ google_cloud_credentials.json
 # IDE
 .vscode/
 __pycache__/
+
+# nltk
+nltk_data/
+
+# audios
+audios/
+
+# sample files
+sample_files/
+
+# jupyter notebooks
+.ipynb_checkpoints/

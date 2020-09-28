@@ -13,14 +13,29 @@ import Person from "@material-ui/icons/Person";
 import Notifications from "@material-ui/icons/Notifications";
 import Button from "components/CustomButtons/Button.js";
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
+import { auth } from "../../firebase/firebase.utils";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import {
+  fetchNotificationsStart,
+  changeNotificationsStatusStart,
+} from "../../redux/notifications/notifications.actions";
 
 const useStyles = makeStyles(styles);
 
-export default function AdminNavbarLinks() {
+const AdminNavbarLinks = (props) => {
+  const {
+    fetchNotificationsStart,
+    notifications,
+    changeNotificationsStatusStart,
+  } = props;
+  React.useEffect(() => {
+    fetchNotificationsStart();
+  }, [fetchNotificationsStart]);
   const classes = useStyles();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
-  const handleClickNotification = event => {
+  const handleClickNotification = (event) => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
     } else {
@@ -30,7 +45,7 @@ export default function AdminNavbarLinks() {
   const handleCloseNotification = () => {
     setOpenNotification(null);
   };
-  const handleClickProfile = event => {
+  const handleClickProfile = (event) => {
     if (openProfile && openProfile.contains(event.target)) {
       setOpenProfile(null);
     } else {
@@ -53,10 +68,10 @@ export default function AdminNavbarLinks() {
           className={classes.buttonLink}
         >
           <Notifications className={classes.icons} />
-          <span className={classes.notifications}>1</span>
+          <span className={classes.notifications}>{notifications.length}</span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
-              Notificaciones
+              Notifications
             </p>
           </Hidden>
         </Button>
@@ -77,18 +92,32 @@ export default function AdminNavbarLinks() {
               id="notification-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseNotification}>
                   <MenuList role="menu">
-                    <MenuItem
-                      onClick={handleCloseNotification}
-                      className={classes.dropdownItem}
-                    >
-                      Hay nuevas notificaciones
-                    </MenuItem>
+                    {notifications.map((notification, index) => {
+                      return (
+                        <MenuItem
+                          key={index}
+                          onClick={handleCloseNotification}
+                          className={classes.dropdownItem}
+                        >
+                          <Link
+                            to="/admin/notifications"
+                            onClick={() =>
+                              changeNotificationsStatusStart(notification.uid)
+                            }
+                          >
+                            {notification.message}
+                            <br />
+                            {notification.date.toDate().toLocaleString()}
+                          </Link>
+                        </MenuItem>
+                      );
+                    })}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
@@ -128,7 +157,7 @@ export default function AdminNavbarLinks() {
               id="profile-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === "bottom" ? "center top" : "center bottom"
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>
@@ -138,14 +167,14 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Configuración
+                      Configuration
                     </MenuItem>
                     <Divider light />
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={() => auth.signOut()}
                       className={classes.dropdownItem}
                     >
-                      Salir
+                      Sign out
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
@@ -156,4 +185,16 @@ export default function AdminNavbarLinks() {
       </div>
     </div>
   );
-}
+};
+
+const mapStateToProps = (store) => ({
+  notifications: store.notifications.notifications,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchNotificationsStart: () => dispatch(fetchNotificationsStart()),
+  changeNotificationsStatusStart: (notificationUID) =>
+    dispatch(changeNotificationsStatusStart(notificationUID)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminNavbarLinks);

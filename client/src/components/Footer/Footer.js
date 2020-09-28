@@ -12,7 +12,7 @@ export default function Footer(props) {
       <div className={classes.container}>
         <p className={classes.right}>
           <span>
-            &copy; {1900 + new Date().getYear()}{" hecho por "}  
+            &copy; {1900 + new Date().getYear()}{" Developed by "}  
             <a
               href="https://github.com/DavidArmendariz/"
               target="_blank"
