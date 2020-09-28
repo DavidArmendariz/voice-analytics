@@ -6,9 +6,9 @@ autopep8
 functions-framework
 firebase-admin
 mutagen
-multi-rake
 python-dotenv
 flask-cors
 googletrans
 pandas
 sendgrid
+wheel
