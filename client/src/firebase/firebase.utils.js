@@ -3,13 +3,13 @@ import "firebase/firestore";
 import "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA4TsiKT_BZb7W5BxgnW4S1syzUyfIrJHE",
-  authDomain: "voice-8ddf6.firebaseapp.com",
-  databaseURL: "https://voice-8ddf6.firebaseio.com",
-  projectId: "voice-8ddf6",
-  storageBucket: "voice-8ddf6.appspot.com",
-  messagingSenderId: "604410782430",
-  appId: "1:604410782430:web:2f7d4d8ea0de0f8dcb584f",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 export const getDataFromDocument = (document) => {
